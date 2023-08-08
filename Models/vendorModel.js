@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const UserModel = new mongoose.Schema({
+const vendorSchema = new mongoose.Schema({
     fname:{
         type:String,
         required:true
@@ -17,6 +17,14 @@ const UserModel = new mongoose.Schema({
         type:String,
         required:true
     },
+    companyName:{
+        type:String,
+        required:true
+    },
+    district:{
+        type:String,
+        required:true
+    },
     password:{
         type:String,
         required:true
@@ -24,6 +32,6 @@ const UserModel = new mongoose.Schema({
     image:{
         type:String
     }
+   
 })
-
-module.exports = mongoose.model('users',UserModel)
+module.exports = mongoose.model('vendors',vendorSchema)
