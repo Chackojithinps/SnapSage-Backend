@@ -4,8 +4,10 @@ const jwt = require('jsonwebtoken');
 
 const serviceSID = 'VA0b09eccc3c1bbe7188ed15edc279cf06';
 const accountSID = 'AC45218f08d24b1264019eac87bdff5513';
-const authToken = '51a861dba29dda2ef879106870ec876e';
+const authToken = '5e24a4972bb9e69ea08598b9fe88d919';
 const client = require('twilio')(accountSID,authToken)
+let userDatas = null;
+
 
 const getHome = async (req, res) => {
   try {
@@ -44,12 +46,14 @@ const postLogin = async (req, res) => {
 const requestOTP = async (req, res) => {
   try {
     const { phone } = req.body;
-    // console.log("Phone", phone)
-    client.verify.services(serviceSID)
+    userDatas = req.body
+    console.log("Phone", phone)
+    client.verify.v2.services(serviceSID)
     .verifications.create({
         to:`+91${phone}`,
         channel:"sms"
     }).then((res1)=>{
+        userDatas= req.body
         console.log("res:",res1)
         return res.status(200).json({res1})
     })
@@ -66,13 +70,15 @@ const verifyOtp = async(req,res)=>{
         const {otp} = req.body
         // const otp2= Number(otp)
         console.log("second : ",otp)
-        const varificationResult = client.verify.services(serviceSID)
+        const varificationResult =await client.verify.v2.services(serviceSID)
         .verificationChecks.create({
             to:"+918156909537",
             code:otp.toString()
         })
+        console.log("varificationResult : ",varificationResult)
         if(varificationResult.status == "approved"){ 
-            const {fname,lname,phone,email,password} =req.body;
+            const {fname,lname,phone,email,password} =userDatas;
+            console.log("varification : ",userDatas)
             const hashPassword =await bcrypt.hash(password.toString(),10);
                 const userData = new User({
                     fname,
