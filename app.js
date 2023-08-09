@@ -3,6 +3,7 @@ require('dotenv').config()
 const mongoose = require('./Config/Config')
 const userRouter = require('./Routes/user-router')
 const vendorRouter = require('./Routes/vendor-router')
+const adminRouter = require('./Routes/admin-router')
 const cors = require('cors')
 const app = express()
 app.use(express.json())
@@ -15,5 +16,6 @@ app.use(cors({
   
 app.use('/',userRouter)
 app.use('/vendor',vendorRouter)
+app.use('/admin',adminRouter)
 const PORT = process.env.PORT || 5000
 app.listen(PORT,()=>console.log("listen to port 3000"))
