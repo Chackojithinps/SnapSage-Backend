@@ -48,7 +48,7 @@ const requestOTP = async (req, res) => {
     const { phone } = req.body;
     userDatas = req.body
     console.log("Phone", phone)
-    client.verify.v2.services(serviceSID)
+    await client.verify.v2.services(serviceSID)
     .verifications.create({
         to:`+91${phone}`,
         channel:"sms"
@@ -65,6 +65,8 @@ const requestOTP = async (req, res) => {
 
 const verifyOtp = async(req,res)=>{
     try {
+      const {fname,lname,phone,email,password} =userDatas;
+ 
         console.log("entered verifyOtp")
         console.log(req.body)
         const {otp} = req.body
@@ -72,12 +74,11 @@ const verifyOtp = async(req,res)=>{
         console.log("second : ",otp)
         const varificationResult =await client.verify.v2.services(serviceSID)
         .verificationChecks.create({
-            to:"+918156909537",
+            to:`+91${phone}`,
             code:otp.toString()
         })
         console.log("varificationResult : ",varificationResult)
         if(varificationResult.status == "approved"){ 
-            const {fname,lname,phone,email,password} =userDatas;
             console.log("varification : ",userDatas)
             const hashPassword =await bcrypt.hash(password.toString(),10);
                 const userData = new User({
