@@ -35,8 +35,13 @@ const postLogin = async (req, res) => {
     }
 
     const token = jwt.sign({ id: userDetails._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1d' });
-    console.log(token);
-    res.status(200).json({ message: 'Login successful', token });
+    // console.log(token);
+
+    const userDetail={
+      userName : `${userDetails.fname} ${userDetails.lname}`,
+      token
+    }
+    res.status(200).json({ message: 'Login successful',userDetail});
   } catch (error) {
     console.log('userLogin', error.message);
     res.status(500).json({ message: 'Something went wrong' });
@@ -96,7 +101,31 @@ const verifyOtp = async(req,res)=>{
     }
 }
 
+const getProfile = async(req,res)=>{
+  try {
+    console.log("getProfile")
+    console.log(req.id)
+    const userDetail = await User.findOne({_id:req.id})
+    if(!userDetail){
+      return res.status(401).json({message:"Not protected",success:false})
+    }
+    return res.status(200).json({success:true,userDetail})
+  } catch (error) {
+    console.log("getProfile",error.message)
+  }
+}
 
+const profileUpload = async(req,res)=>{
+  try {
+     console.log("image uploaded")
+     console.log(req.id)
+     const img = req.file.filename;
+     const data = await User.updateOne({_id:req.id},{$set:{image:img}})
+     res.status(200).json({success:true,img})
+  } catch (error) {
+    console.log("profilpic",error.message)
+  }
+}
 
 
 module.exports = {
@@ -104,4 +133,6 @@ module.exports = {
   postLogin,
   verifyOtp,
   requestOTP,
+  getProfile,
+  profileUpload
 };

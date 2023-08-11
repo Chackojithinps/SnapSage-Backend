@@ -4,9 +4,11 @@ const mongoose = require('./Config/Config')
 const userRouter = require('./Routes/user-router')
 const vendorRouter = require('./Routes/vendor-router')
 const adminRouter = require('./Routes/admin-router')
+const path = require('path')
 const cors = require('cors')
 const app = express()
 app.use(express.json())
+app.use(express.static(path.join(__dirname,'Public')))
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({
     origin:["http://localhost:3000"],

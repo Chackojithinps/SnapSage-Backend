@@ -7,4 +7,5 @@ routes.post('/register',vendorController.requestOTP)
 routes.post('/verifyOtp',vendorController.verifyOtp)
 routes.post('/login',vendorController.postLogin)
 
+
 module.exports= routes
