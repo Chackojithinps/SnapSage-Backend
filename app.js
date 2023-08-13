@@ -12,7 +12,7 @@ app.use(express.static(path.join(__dirname,'Public')))
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({
     origin:["http://localhost:3000"],
-    methods:['GET','POST'],
+    methods:['GET','POST','PATCH'],
     credentials:true
   }))
   

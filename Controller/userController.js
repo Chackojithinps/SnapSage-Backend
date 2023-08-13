@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const serviceSID = 'VA0b09eccc3c1bbe7188ed15edc279cf06';
 const accountSID = 'AC45218f08d24b1264019eac87bdff5513';
-const authToken = '5e24a4972bb9e69ea08598b9fe88d919';
+const authToken = 'af63eb70143e97471fbf46e459f3cba8';
 const client = require('twilio')(accountSID,authToken)
 let userDatas = null;
 
@@ -34,7 +34,7 @@ const postLogin = async (req, res) => {
       return res.status(401).json({ message: 'Incorrect password' });
     }
 
-    const token = jwt.sign({ id: userDetails._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1d' });
+    const token = jwt.sign({ id: userDetails._id }, process.env.JWT_USER_SECRET_KEY, { expiresIn: '1d' });
     // console.log(token);
 
     const userDetail={

@@ -9,7 +9,7 @@ const userAuth = (req,res,next)=>{
         console.log("token in userAuth : ",token)
         const tokenwithoutBearer = token.split(" ")[1]
         console.log("kkkkkkkkkkkkkk", tokenwithoutBearer)
-        jwt.verify(tokenwithoutBearer,process.env.JWT_SECRET_KEY,(err,encoded)=>{
+        jwt.verify(tokenwithoutBearer,process.env.JWT_USER_SECRET_KEY,(err,encoded)=>{
             if(err){
                 console.log("auth Failed",err.message)
                 return res.status(401).send({message:"Auth Failed",success:false})

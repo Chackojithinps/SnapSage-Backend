@@ -5,7 +5,6 @@ const userController = require('../Controller/userController')
 const userAuth = require('../Middlewares/userAuth')
 // const storage = require('../Middlewares/multer')
 
-
 const path = require('path')
 // const multer = require('multer')
 const storage = multer.diskStorage({
