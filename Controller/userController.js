@@ -23,15 +23,17 @@ const postLogin = async (req, res) => {
     console.log('entered login');
     const { email, password } = req.body;
     const userDetails = await User.findOne({ email });
-
+    console.log(userDetails)
     if (!userDetails) {
-      return res.status(404).json({ message: "User doesn't exist" });
+       return res.status(404).json({ message: "User doesn't exist" });
     }
-
+    if(userDetails.status==true){
+       return res.status(404).json({ message: "User doesn't exist" });
+    }
     const isPasswordMatch = await bcrypt.compare(password, userDetails.password);
 
     if (!isPasswordMatch) {
-      return res.status(401).json({ message: 'Incorrect password' });
+       return res.status(401).json({ message: 'Incorrect password' });
     }
 
     const token = jwt.sign({ id: userDetails._id }, process.env.JWT_USER_SECRET_KEY, { expiresIn: '1d' });

@@ -18,7 +18,7 @@ const partnerAuth = (req,res,next)=>{
                 next()
             }
         })
-    } catch (error) {
+    }catch (error) {
         console.log("userAuth failed : ",error.message)
     }
 }

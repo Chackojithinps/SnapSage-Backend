@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken')
 const userAuth = (req,res,next)=>{
     try {
         console.log("UserAuth entered")
-        console.log(req.headers)
+        console.log("Hello >>>>>",req.headers)
+        
         const token = req.headers[`authorization`]
         console.log("token in userAuth : ",token)
         const tokenwithoutBearer = token.split(" ")[1]
