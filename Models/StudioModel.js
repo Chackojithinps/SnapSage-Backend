@@ -17,11 +17,16 @@ const studioSchema = new mongoose.Schema({
         {
             categories: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Category'
+                ref: 'Category',
+                required:true
             },
             price: {
                 type: Number,
                 required: true
+            },
+            images: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Photos'
             }
         }
     ],
