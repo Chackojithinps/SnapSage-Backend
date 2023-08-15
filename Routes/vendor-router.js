@@ -30,7 +30,7 @@ routes.get('/profile',vendorAuth.partnerAuth,vendorController.getProfile)
 routes.post('/upload',vendorAuth.partnerAuth,upload.single('file'),vendorController.profileUpload)
 
 routes.get('/getCategories',vendorAuth.partnerAuth,studioController.getCategories)
-
+routes.post('/addStudio',vendorAuth.partnerAuth,studioController.addStudio)
 
 
 module.exports= routes
