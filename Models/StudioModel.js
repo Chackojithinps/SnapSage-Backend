@@ -5,10 +5,7 @@ const studioSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    place: {
-        type: String,
-        required: true
-    },
+   
     vendorId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Vendor'
@@ -33,6 +30,18 @@ const studioSchema = new mongoose.Schema({
     description:{
         type:String,
         require:true
+    },
+    district: {
+        type: String,
+        required: true
+    },
+    city:{
+        type:String,
+        required:true
+    },
+    pin:{
+        type:String,
+        required:true
     },
     isBlocked:{
         type:Boolean,
