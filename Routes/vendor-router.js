@@ -5,7 +5,7 @@ const routes = express.Router()
 const vendorAuth = require('../Middlewares/partnerAuth')
 const vendorController = require('../Controller/vendorController')
 const studioController = require('../Controller/studioController')
-
+const imageController = require('../Controller/imageController')
 
 const path = require('path')
 // const multer = require('multer')
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
         cb(null,path.join(__dirname,"../Public/Images"));
     },
     filename:(req,file,cb)=>{
-        console.log(file)
+        console.log("this is file : ",file) 
         cb(null,Date.now() + path.extname(file.originalname))
     }
 })
@@ -32,5 +32,7 @@ routes.post('/upload',vendorAuth.partnerAuth,upload.single('file'),vendorControl
 routes.get('/getCategories',vendorAuth.partnerAuth,studioController.getCategories)
 routes.post('/addStudio',vendorAuth.partnerAuth,studioController.addStudio)
 
-
+routes.get('/getStudios',vendorAuth.partnerAuth,imageController.getStudios)
+routes.get('/getimageCategories',vendorAuth.partnerAuth,imageController.getCategories)
+routes.post('/uploadStudioimg',vendorAuth.partnerAuth,upload.array('file',30), imageController.uploadImages)
 module.exports= routes

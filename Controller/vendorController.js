@@ -5,6 +5,7 @@ const serviceSID = 'VA0b09eccc3c1bbe7188ed15edc279cf06';
 const accountSID = 'AC45218f08d24b1264019eac87bdff5513';
 const authToken = 'af63eb70143e97471fbf46e459f3cba8';
 const client = require('twilio')(accountSID, authToken)
+const cloudinary = require('../Config/Cloudinary')
 
 let vendorDatas = null;
 
@@ -122,12 +123,18 @@ const getProfile = async(req,res)=>{
 const profileUpload = async(req,res)=>{
   try {
      console.log("image uploaded")
-     console.log(req.id)
-     const img = req.file.filename;
-     const data = await Vendor.updateOne({_id:req.id},{$set:{image:img}})
-     res.status(200).json({success:true,img})
+     console.log("req.body ,",req.body)
+     console.log("req.file : ",req.file)
+     const result = await cloudinary.uploader.upload(req.file.path)
+     console.log(result)
+     const image=result.secure_url
+    //  const img= req.file.filename
+     console.log("image",image)
+     const data = await Vendor.updateOne({_id:req.id},{$set:{image:image}})
+    //  const vendorDetails =  await Vendor.findOne({_id:req.id})
+     res.status(200).json({success:true,image})
   } catch (error) {
-    // console.log("profilpic",error.message)
+    console.log("profilpic",error.message)
   }
 }
 module.exports = { requestOTP, verifyOtp, postLogin , getProfile,profileUpload }
