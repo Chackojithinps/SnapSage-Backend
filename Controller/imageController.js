@@ -56,10 +56,10 @@ const getCategories = async (req, res) => {
 const uploadImages = async(req,res)=>{
     try {
         console.log("entered upload images in imagecontroller")
-        console.log("rq.body: ",req.body)
-        console.log("rq.files: ",req.files)
+        // console.log("rq.body: ",req.body)
+        // console.log("rq.files: ",req.files)
         const categoryData = JSON.parse(req.body.categoryData);
-        console.log("categories data ___________________________", categoryData)
+        // console.log("categories data ___________________________", categoryData)
         const fileDetails = req.files;
         // console.log("______________________ : ",fileDetails)
         const uploadedImages = [];
@@ -68,14 +68,26 @@ const uploadImages = async(req,res)=>{
             const categoryImages = category.images;
             const uploadedCategoryImages = [];
             for (const imageName of categoryImages) {
-                console.log("imgData111111111111111111111111111",imageData)
-                const result = await cloudinary.uploader.upload(imageData);
-                uploadedCategoryImages.push(result.secure_url);
+                console.log(imageName)
+                // const imageData = fileDetails.find((item)=>{
+                //     item.originalname == imageName
+                // })
+                const imageData = fileDetails.find((item) => item.originalname === imageName);
+               
+
+                // console.log("-------------------> : ",imageData)
+                if(imageData){
+
+                    const result = await cloudinary.uploader.upload(imageData.path);
+                    console.log("cloudinary Data : ",result)
+                    uploadedCategoryImages.push(result.secure_url);
+                }
             }
             uploadedImages.push({
                 categoryId: category.categoryId,
                 images: uploadedCategoryImages
             });
+            
         }
       console.log("))))))))))))  : ",uploadedImages)
         // res.status(200).json({ message: 'Images uploaded successfully' });
