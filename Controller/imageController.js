@@ -57,18 +57,19 @@ const uploadImages = async(req,res)=>{
     try {
         console.log("entered upload images in imagecontroller")
         console.log("rq.body: ",req.body)
-        // console.log("rq.files: ",req.files)
+        console.log("rq.files: ",req.files)
         const categoryData = JSON.parse(req.body.categoryData);
         console.log("categories data ___________________________", categoryData)
-        // const fileDetails = req.files;
-
+        const fileDetails = req.files;
+        // console.log("______________________ : ",fileDetails)
         const uploadedImages = [];
 
         for (const category of categoryData) {
             const categoryImages = category.images;
             const uploadedCategoryImages = [];
             for (const imageName of categoryImages) {
-                const result = await cloudinary.uploader.upload(imageName);
+                console.log("imgData111111111111111111111111111",imageData)
+                const result = await cloudinary.uploader.upload(imageData);
                 uploadedCategoryImages.push(result.secure_url);
             }
             uploadedImages.push({
@@ -76,10 +77,10 @@ const uploadImages = async(req,res)=>{
                 images: uploadedCategoryImages
             });
         }
-
-        res.status(200).json({ message: 'Images uploaded successfully' });
+      console.log("))))))))))))  : ",uploadedImages)
+        // res.status(200).json({ message: 'Images uploaded successfully' });
     } catch (error) {
-        console.log("upload image error : ", error.message);
+        console.log("upload image error : ", error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };

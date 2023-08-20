@@ -10,10 +10,10 @@ const imageController = require('../Controller/imageController')
 const path = require('path')
 // const multer = require('multer')
 const storage = multer.diskStorage({
-    destination:(req,file,cb)=>{
-        console.log("multer entered")
-        cb(null,path.join(__dirname,"../Public/Images"));
-    },
+    // destination:(req,file,cb)=>{
+    //     console.log("multer entered")
+    //     cb(null,path.join(__dirname,"../Public/Images"));
+    // },
     filename:(req,file,cb)=>{
         console.log("this is file : ",file) 
         cb(null,Date.now() + path.extname(file.originalname))
