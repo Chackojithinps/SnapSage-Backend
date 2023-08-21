@@ -5,6 +5,10 @@ const photoSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Vendor'
     },
+    studioId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Studio'
+    },
     images:[
         {
             categoryId:{

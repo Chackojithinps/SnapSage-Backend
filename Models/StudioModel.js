@@ -5,7 +5,6 @@ const studioSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-   
     vendorId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Vendor'
@@ -21,10 +20,6 @@ const studioSchema = new mongoose.Schema({
                 type: Number,
                 required: true
             },
-            images: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Photos'
-            }
         }
     ],
     description:{
