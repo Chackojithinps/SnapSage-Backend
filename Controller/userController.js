@@ -1,4 +1,6 @@
 const User = require('../Models/userModel');
+const Studio = require('../Models/StudioModel')
+const studioImg = require('../Models/photoSchema')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -129,6 +131,18 @@ const profileUpload = async(req,res)=>{
   }
 }
 
+const getStudios = async (req,res)=>{
+  try {
+    console.log("entered getStudio page")
+    const studioDetails = await Studio.find().populate('images')
+    // const studioImages = await studioImg.find().populate("studioId")
+    // console.log("studioImages : ",studioImages)
+    console.log("studioDetails : ",studioDetails)
+    res.status(200).json({success:true,studioDetails})
+  } catch (error) {
+    console.log("error in getStudios in userside : ",error.message)
+  }
+}
 
 module.exports = {
   getHome,
@@ -136,5 +150,6 @@ module.exports = {
   verifyOtp,
   requestOTP,
   getProfile,
-  profileUpload
+  profileUpload,
+  getStudios
 };

@@ -7,7 +7,7 @@ const photoSchema = new mongoose.Schema({
     },
     studioId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'Studio'
+        ref:'studios'
     },
     images:[
         {

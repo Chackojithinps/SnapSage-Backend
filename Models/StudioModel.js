@@ -20,8 +20,13 @@ const studioSchema = new mongoose.Schema({
                 type: Number,
                 required: true
             },
+           
         }
     ],
+    images:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'photos'
+    },
     description:{
         type:String,
         require:true

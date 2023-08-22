@@ -63,7 +63,7 @@ const uploadImages = async(req,res)=>{
         
         const categoryData = JSON.parse(req.body.categoryData);
         const fileDetails = req.files;
-
+        let savedPhotos;
         console.log("fileDetails : ",fileDetails)
         const uploadedImages = [];
         for (const category of categoryData) {
@@ -121,9 +121,14 @@ const uploadImages = async(req,res)=>{
                 vendorId,
                 images:uploadedImages,
              })
-             await studioImages.save()
+             savedPhotos=await studioImages.save()
+             console.log("savedPhotos : ",savedPhotos)
+             const idsved = savedPhotos._id;
+             console.log(" id of savd : ",idsved)
+             const k = await Studio.updateOne({_id:studioId},{$set:{images:idsved}})
+          
+             console.log("studioDetals : ",k)
         }
-      
          res.status(200).json({success:true})
     } catch (error) {
         console.log("upload image error : ", error);

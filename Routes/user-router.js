@@ -27,4 +27,5 @@ routes.post('/verifyOtp',userController.verifyOtp)
 routes.get('/profile',userAuth.userAuth,userController.getProfile)
 routes.post('/upload',userAuth.userAuth,upload.single('file'),userController.profileUpload)
 
+routes.get('/getStudios',userController.getStudios)
 module.exports = routes
