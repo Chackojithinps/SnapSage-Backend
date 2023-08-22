@@ -1,14 +1,13 @@
 const Vendor = require('../Models/vendorModel')
 const Studio = require('../Models/StudioModel')
-const Category = require('../Models/categoryModel')
 const StudioImg = require('../Models/photoSchema')
 const cloudinary = require('../Config/Cloudinary')
-
+const category = require('../Models/categoryModel')
 // ----------------------------------------------Get the studios lists --------------------------------------
 
 const getStudios =  async(req,res)=>{
     try {
-        // console.log("entered getCategories addStudio")
+        console.log("entered getStudio________________________________________________")
         console.log("req.id :",req.id)
         const studioDatas = await Studio.find({vendorId:req.id})
         res.status(200).json({studioDatas})
@@ -22,9 +21,9 @@ const getStudios =  async(req,res)=>{
 
 const getCategories = async (req, res) => {
     try {
-        console.log("entered getCategories addStudio11");
+        // console.log("entered getCategories addStudio11");
         const studioId  = req.query.id;
-        console.log("req.paramas : ",studioId)
+        // console.log("req.paramas : ",studioId)
         const studio = await Studio.findById(studioId).populate({
             path: 'category.categories', // Populate the categories field inside the category array
             model: 'category' // The name of the Category model
@@ -42,11 +41,11 @@ const getCategories = async (req, res) => {
              item.categories
         ))
        
-        console.log("finalDatas : ",categoryDatas)
+        // console.log("finalDatas : ",categoryDatas)
 
         res.status(200).json({ categoryDatas });
     } catch (error) {
-        console.log("getCategories addStudio", error.message);
+        // console.log("getCategories addStudio", error.message);
         res.status(500).json({ message: "Internal server error." });
     }
 }
@@ -59,15 +58,20 @@ const uploadImages = async(req,res)=>{
         console.log("entered upload images in imagecontroller")
         const vendorId = req.id;
         const studioId = req.body.studioId
-        console.log(req.body)
+        console.log("req.body : ",req.body)
+        console.log("studioId : ",studioId)
+        
         const categoryData = JSON.parse(req.body.categoryData);
         const fileDetails = req.files;
+
+        console.log("fileDetails : ",fileDetails)
         const uploadedImages = [];
         for (const category of categoryData) {
             const categoryImages = category.images;
             const uploadedCategoryImages = [];
             for (const imageName of categoryImages) {
                 const imageData = fileDetails.find((item) => item.originalname === imageName);
+                console.log("imageData : " ,imageData)
                 if(imageData){              
                     const result = await cloudinary.uploader.upload(imageData.path,{folder:'Studio categoryWise Images'});
                     uploadedCategoryImages.push(result.secure_url);
@@ -79,16 +83,15 @@ const uploadImages = async(req,res)=>{
             });
            
         }
+        console.log("uploaded Images are : ",uploadedImages)
+
         const existingStudio = await StudioImg.findOne({ studioId: studioId});
         console.log("existingDoc : ",existingStudio)
        
         if (existingStudio) {
-            // Create a new array to hold the updated images
             const updatedImages = existingStudio.images.map((item) => {
                 const matchingUploadedItem = uploadedImages.find((uploadedItem) => uploadedItem.categoryId.toString() === item.categoryId.toString());
-                console.log("------------[][][] : :  : ",matchingUploadedItem)
                 if (matchingUploadedItem) {
-                    // Merge the old and new photos for the category
                     return {
                         categoryId: item.categoryId,
                         photos: [...item.photos, ...matchingUploadedItem.photos],
@@ -97,12 +100,13 @@ const uploadImages = async(req,res)=>{
                     return item.toObject();
                 }
             });
-            console.log("updatedDataaaaaaaaaaaaaaaaa : ",updatedImages)
+               
+            console.log("updated Images : ",updatedImages)
             const unmatchedUploadedItems = uploadedImages.filter((uploadedItem) =>
             !existingStudio.images.some((item) => item.categoryId.toString() === uploadedItem.categoryId.toString())
         );
+            console.log("unmatcheduploaded items : ",unmatchedUploadedItems)
 
-        // Add unmatched categories to the existingStudio
         existingStudio.images = [...updatedImages, ...unmatchedUploadedItems];
 
         await existingStudio.save();
@@ -127,9 +131,26 @@ const uploadImages = async(req,res)=>{
     }
 };
 
+// -------------------------------------------------getStudioImages -------------------------------------------------
 
+const getStudioImages = async(req,res)=>{
+    try {
+        const studioId = req.query.id
+        console.log("req.id of getSTudioImages: ", studioId )
+        const studioDatas = await StudioImg.findOne({ studioId: studioId }).populate("images.categoryId")
+        console.log("________________________ : ",studioDatas)
+        const categoryDataWithImages = studioDatas.images.map((imageItem)=>(
+             imageItem
+        ))
+        console.log("****************",categoryDataWithImages)
+        res.status(200).json({success:true,categoryDataWithImages})
+    } catch (error) {
+        console.log("getStudioImages : ",error.message)
+    }
+}
 module.exports = {
     getStudios,
     getCategories,
-    uploadImages
+    uploadImages,
+    getStudioImages
 }
