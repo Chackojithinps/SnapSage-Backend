@@ -30,7 +30,16 @@ const vendorSchema = new mongoose.Schema({
         required:true
     },
     image:{
-        type:String
+       type:Array,
+       required:true
+    },
+    unionCode:{
+        type:String,
+        require:true
+    },
+    varified:{
+        type:Boolean,
+        default:false
     }
    
 })

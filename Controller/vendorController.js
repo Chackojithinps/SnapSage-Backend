@@ -1,22 +1,24 @@
 const Vendor = require('../Models/vendorModel')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const serviceSID = 'VA0b09eccc3c1bbe7188ed15edc279cf06';
+const serviceSID = 'VA53cf11013caab9faf4fa4200849c6dfe';
 const accountSID = 'AC45218f08d24b1264019eac87bdff5513';
-const authToken = 'af63eb70143e97471fbf46e459f3cba8';
+const authToken = 'ef312426ae5c88c37480af563156bede';
 const client = require('twilio')(accountSID, authToken)
 const cloudinary = require('../Config/Cloudinary')
 
 let vendorDatas = null;
-
+let vendorImages =null;
 //-------------------------------Send Otp Vendor side------------------------------->
 
 const requestOTP = async (req, res) => {
   try {
     console.log("vendor side")
     console.log("req.body : ", req.body)
+    console.log("req.files : ",req.files)
     const { phone } = req.body;
     vendorDatas = req.body
+    vendorImages = req.files
     console.log("Phone", phone)
     client.verify.v2.services(serviceSID)
       .verifications.create({
@@ -48,8 +50,25 @@ const verifyOtp = async (req, res) => {
       })
     console.log("varificationResult : ", varificationResult)
     if (varificationResult.status == "approved") {
-      const { fname, lname, phone, email, companyName, district, password } = vendorDatas;
+      const { fname, lname, phone, email, companyName, district, password,unionCode } = vendorDatas;
       console.log("varification : ", vendorDatas)
+
+      const img=[];
+      const vendorImg = vendorImages
+      console.log("vendorImg : ",vendorImg)
+      for(const file of vendorImg){
+        const result = await cloudinary.uploader.upload(file.path,{folder:'SnapSage-Varification'});
+        img.push(result.secure_url)
+        console.log("result : ",result)
+      }
+   
+      
+     
+      // fileData.forEach( async element => {
+      //   const result = await cloudinary.uploader.upload(element.path,{folder:'SnapSage-Varification'});
+      //   img.push(result.secure_url)
+      // });
+      console.log("img : ",img)
       const hashPassword = await bcrypt.hash(password.toString(), 10);
       const vendorData = new Vendor({
         fname,
@@ -58,7 +77,9 @@ const verifyOtp = async (req, res) => {
         email,
         companyName,
         district,
-        password: hashPassword
+        password: hashPassword,
+        image:img,
+        unionCode
       })
       await vendorData.save()
       res.status(200).json({ message: "Successfully registered" })
