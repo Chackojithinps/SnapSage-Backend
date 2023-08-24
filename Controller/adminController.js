@@ -67,7 +67,7 @@ const getUserLists = async(req,res)=>{
 const getVendorLists = async(req,res)=>{
   try {
     console.log("getting vendorlists")
-    const Vendorlists = await Vendor.find()
+    const Vendorlists = await Vendor.find({varified:true})
     // console.log("vendorlists : ",Vendorlists)
     res.status(200).json({success:true,Vendorlists})
   } catch (error) {
@@ -99,4 +99,39 @@ const unblockUser = async(req,res)=>{
   }
 }
 
-  module.exports ={postLogin,getUserLists,getVendorLists,blockUser,unblockUser}
+// ---------------------------------------Get Unvarified vendor req-----------------------------------------------
+
+const getUnvarified = async(req,res)=>{
+  try {
+    console.log("unvaified entered")
+    const unVarifiedUser = await Vendor.aggregate([{$match:{varified:false}}])
+    // console.log("unVarifiedUser list : ",unVarifiedUser)
+    res.status(200).json({success: true , unVarifiedUser})
+  } catch (error) {
+    console.log("getUnvarified : ",getUnvarified)
+  }
+}
+
+// -------------------------------------Varify Vendor requests ----------------------------------
+
+const verifyVendor = async (req,res) =>{
+   try {
+      console.log("entered varify user ")
+      console.log(req.query.id)
+      const unVarifiedUser = await Vendor.updateOne({_id:req.query.id},{$set:{varified:true}})
+      console.log("unVarifiedUser : ",unVarifiedUser)
+      res.status(200).json({success: true})
+
+
+   } catch (error) {
+      console.log("varify vendor : ",error.message)
+   }
+}
+  module.exports ={postLogin,
+    getUserLists,
+    getVendorLists,
+    blockUser,
+    unblockUser,
+    getUnvarified,
+    verifyVendor
+  }

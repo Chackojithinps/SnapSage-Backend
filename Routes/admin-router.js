@@ -10,9 +10,14 @@ routes.patch('/blockUser',adminController.blockUser)
 routes.patch('/unblockUser',adminController.unblockUser)
 
 routes.get('/vendorlists',adminController.getVendorLists)
+routes.get('/getUnverified',adminController.getUnvarified)
+routes.patch('/verifyVendor',adminController.verifyVendor)
 
 routes.get('/categories',categoryController.getCategories)
 routes.post('/addCategory',categoryController.addCategory)
 routes.patch('/editCategory',categoryController.editCategory)
+
+
+
 
 module.exports= routes
