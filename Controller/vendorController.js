@@ -61,13 +61,7 @@ const verifyOtp = async (req, res) => {
         img.push(result.secure_url)
         console.log("result : ",result)
       }
-   
-      
-     
-      // fileData.forEach( async element => {
-      //   const result = await cloudinary.uploader.upload(element.path,{folder:'SnapSage-Varification'});
-      //   img.push(result.secure_url)
-      // });
+
       console.log("img : ",img)
       const hashPassword = await bcrypt.hash(password.toString(), 10);
       const vendorData = new Vendor({
@@ -97,11 +91,14 @@ const postLogin = async (req, res) => {
     const { email, password } = req.body;
     console.log("req.body : ", req.body)
     const VendorDetails = await Vendor.findOne({ email });
-
+    console.log("vendordetails : ",VendorDetails)
     if (!VendorDetails){
         return res.status(404).json({ message: "User doesn't exist" });
     }
+    if(!VendorDetails.varified){
+      return res.status(404).json({ message: "User doesn't exist" });
 
+    }
     const isPasswordMatch = await bcrypt.compare(password, VendorDetails.password);
 
     if (!isPasswordMatch) {
