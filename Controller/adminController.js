@@ -54,9 +54,30 @@ const postLogin = async (req, res) => {
 const getUserLists = async(req,res)=>{
   try {
     console.log("getting userlists")
-    const UserLists = await User.find()
+    const searchData = req.query.search;
+    let query={}
+    if(searchData){
+      query={
+        $or: [
+          { fname: { $regex: searchData, $options: "i" } }, 
+          { lname: { $regex: searchData, $options: "i" } }, 
+          { email: { $regex: searchData, $options: "i" } }, 
+          { companyName: { $regex: searchData, $options: "i" }}
+        ]
+      }
+    }
+    const UserLists = await User.find(query)
     // console.log("userlists : ",UserLists)
-    res.status(200).json({success:true,UserLists})
+    if(UserLists.length<1){
+      console.log("no userlists")
+       res.status(200).json({success:true,message:"No datas found"})
+
+    }else{
+
+      console.log("eheeeee")
+     res.status(200).json({success:true,UserLists})
+
+    }
   } catch (error) {
     console.log("getUserLists : ",error.message)
   }
@@ -67,9 +88,34 @@ const getUserLists = async(req,res)=>{
 const getVendorLists = async(req,res)=>{
   try {
     console.log("getting vendorlists")
-    const Vendorlists = await Vendor.find({varified:true})
+    
+    const searchData = req.query.search
+    console.log("serachdata : ",searchData)
+    
+    let query={varified:true}
+    if(searchData){
+       query = {
+        varified: true,
+        $or: [
+          { fname: { $regex: searchData, $options: "i" } }, 
+          { lname: { $regex: searchData, $options: "i" } }, 
+          { email: { $regex: searchData, $options: "i" } }, 
+          { companyName: { $regex: searchData, $options: "i" }}
+        ]
+      };
+    }
+    const Vendorlists = await Vendor.find(query)
     // console.log("vendorlists : ",Vendorlists)
-    res.status(200).json({success:true,Vendorlists})
+    console.log(Vendorlists.length)
+    if(Vendorlists.length<1){
+      console.log("no vendorlists")
+       res.status(200).json({success:true,message:"No datas found"})
+
+    }else{
+
+      console.log("eheeeee")
+      return res.status(200).json({success:true,Vendorlists})
+    }
   } catch (error) {
     console.log("getvendorLists : ",error.message)
   }
@@ -103,12 +149,37 @@ const unblockUser = async(req,res)=>{
 
 const getUnvarified = async(req,res)=>{
   try {
-    console.log("unvaified entered")
-    const unVarifiedUser = await Vendor.aggregate([{$match:{varified:false}}])
-    // console.log("unVarifiedUser list : ",unVarifiedUser)
-    res.status(200).json({success: true , unVarifiedUser})
+    console.log("getting unverified vendorlists")
+    
+    const searchData = req.query.search
+    console.log("serachdata : ",searchData)
+    
+    let query={varified:false}
+    if(searchData){
+       query = {
+        varified: false,
+        $or: [
+          { fname: { $regex: searchData, $options: "i" }}, 
+          { lname: { $regex: searchData, $options: "i" }}, 
+          { email: { $regex: searchData, $options: "i" }}, 
+          { companyName: { $regex: searchData, $options: "i" }}
+        ]
+      };
+    }
+    const Vendorlists = await Vendor.find(query)
+    // console.log("vendorlists : ",Vendorlists)
+    console.log(Vendorlists.length)
+    if(Vendorlists.length<1){
+      console.log("no vendorlists")
+       res.status(200).json({success:true,message:"No datas found"})
+
+    }else{
+
+      console.log("eheeeee")
+      return res.status(200).json({success:true,Vendorlists})
+    }
   } catch (error) {
-    console.log("getUnvarified : ",getUnvarified)
+    console.log("getvendorLists : ",error.message)
   }
 }
 
@@ -127,11 +198,49 @@ const verifyVendor = async (req,res) =>{
       console.log("varify vendor : ",error.message)
    }
 }
+
+// -------------------------------------Reject Vendor requests ----------------------------------
+
+const rejectVendor = async (req,res) =>{
+  try {
+     console.log("entered reject user ")
+     console.log(req.query.id)
+     const deleteVendor = await Vendor.deleteOne({_id:req.query.id})
+     console.log("unVarifiedUser : ",deleteVendor)
+     res.status(200).json({success: true})
+
+
+  } catch (error) {
+     console.log("varify vendor : ",error.message)
+  }
+}
+
+// -------------------------------------Search Vendorlists ----------------------------------
+
+// const searchVendorlists = async (req,res) =>{
+//   try {
+//      console.log("entered searchvendorlists ")
+//      const searchData = await Vendor.find({
+//       varified: true,
+//       $or: [
+//         { name: { $regex: req.body.searchText, $options: "i" } }, // Using regex for case-insensitive search on the 'name' field
+//         { email: { $regex: req.body.searchText, $options: "i" } }, // Using regex for case-insensitive search on the 'email' field
+//         // Add more fields as needed for search
+//       ],
+//     });
+//      console.log("searchdata : ",searchData)
+//      res.status(200).json({success: true})
+//   } catch (error) {
+//      console.log("varify vendor : ",error.message)
+//   }
+// }
   module.exports ={postLogin,
     getUserLists,
     getVendorLists,
     blockUser,
     unblockUser,
     getUnvarified,
-    verifyVendor
+    verifyVendor,
+    rejectVendor,
+    // searchVendorlists
   }

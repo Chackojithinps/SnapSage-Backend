@@ -12,6 +12,8 @@ routes.patch('/unblockUser',adminController.unblockUser)
 routes.get('/vendorlists',adminController.getVendorLists)
 routes.get('/getUnverified',adminController.getUnvarified)
 routes.patch('/verifyVendor',adminController.verifyVendor)
+routes.post('/rejectVendor',adminController.rejectVendor)
+// routes.get('/searchVendorlists',adminController.searchVendorlists)
 
 routes.get('/categories',categoryController.getCategories)
 routes.post('/addCategory',categoryController.addCategory)
