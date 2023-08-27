@@ -145,12 +145,12 @@ const profileUpload = async(req,res)=>{
      console.log("req.file : ",req.file)
      const result = await cloudinary.uploader.upload(req.file.path)
      console.log(result)
-     const image=result.secure_url
+     const profile=result.secure_url
     //  const img= req.file.filename
-     console.log("image",image)
-     const data = await Vendor.updateOne({_id:req.id},{$set:{image:image}})
+     console.log("image",profile)
+     const data = await Vendor.updateOne({_id:req.id},{$set:{profile}})
     //  const vendorDetails =  await Vendor.findOne({_id:req.id})
-     res.status(200).json({success:true,image})
+     res.status(200).json({success:true,profile})
   } catch (error) {
     console.log("profilpic",error.message)
   }
