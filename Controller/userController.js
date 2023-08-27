@@ -1,9 +1,8 @@
 const User = require('../Models/userModel');
 const Studio = require('../Models/StudioModel')
-const studioImg = require('../Models/photoSchema')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const cloudinary = require('../Config/Cloudinary')
 const serviceSID = 'VA0b09eccc3c1bbe7188ed15edc279cf06';
 const accountSID = 'AC45218f08d24b1264019eac87bdff5513';
 const authToken = 'af63eb70143e97471fbf46e459f3cba8';
@@ -131,8 +130,9 @@ const profileUpload = async(req,res)=>{
   try {
      console.log("image uploaded")
      console.log(req.id)
-     const img = req.file.filename;
-     const data = await User.updateOne({_id:req.id},{$set:{image:img}})
+     const result = await cloudinary.uploader.upload(req.file.path)
+     const image=result.secure_url
+     const data = await User.updateOne({_id:req.id},{$set:{image}})
      res.status(200).json({success:true,img})
   } catch (error) {
     console.log("profilpic",error.message)
