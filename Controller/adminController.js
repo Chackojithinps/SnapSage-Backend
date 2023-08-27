@@ -1,5 +1,6 @@
 const Admin = require('../Models/adminModel')
 const User = require('../Models/userModel')
+const Studio = require('../Models/StudioModel')
 const jwt = require('jsonwebtoken')
 const Vendor = require('../Models/vendorModel')
 const bcrypt = require('bcryptjs')
@@ -219,6 +220,41 @@ const rejectVendor = async (req,res) =>{
   }
 }
 
+// ----------------------------------------------------- get Unvarified Studios ---------------------------------------------
+
+const getUnvarifiedStudios = async(req,res)=>{
+  try {
+    console.log("getting unverified Studios")  
+    const searchData = req.query.search
+    console.log("serachdata : ",searchData)
+    
+    let query={varified:false}
+    if(searchData){
+       query = {
+        varified: false,
+        $or: [
+          { companyName: { $regex: searchData, $options: "i" }}, 
+          { place: { $regex: searchData, $options: "i" }}, 
+          { city: { $regex: searchData, $options: "i" }}, 
+          { email: { $regex: searchData, $options: "i" }}
+        ]
+      };
+    }
+    const studioDatas = await Studio.find(query)
+    console.log(studioDatas.length)
+    if(studioDatas.length<1){
+      console.log("no vendorlists")
+       res.status(200).json({success:true,message:"No datas found"})
+
+    }else{
+      console.log("eheeeee")
+      return res.status(200).json({success:true,studioDatas})
+    }
+  } catch (error) {
+    console.log("studioDatas : ",error.message)
+  }
+}
+
   module.exports ={postLogin,
     getUserLists,
     getVendorLists,
@@ -227,4 +263,5 @@ const rejectVendor = async (req,res) =>{
     getUnvarified,
     verifyVendor,
     rejectVendor,
+    getUnvarifiedStudios
   }

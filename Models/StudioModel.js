@@ -47,9 +47,15 @@ const studioSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    varified:{
+        type:Boolean,
+        default:false
+    },
     isBlocked:{
         type:Boolean,
-    }
+        default:false
+    },
+   
 },{
     timestamps:true
 })

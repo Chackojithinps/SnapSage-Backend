@@ -22,6 +22,8 @@ routes.get('/categories',categoryController.getCategories)
 routes.post('/addCategory',categoryController.addCategory)
 routes.patch('/editCategory',categoryController.editCategory)
 
+// -------------------------Studio Management---------------------
+routes.get('/getUnvarifiedStudios',adminController.getUnvarifiedStudios)
 
 
 
