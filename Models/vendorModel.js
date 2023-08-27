@@ -40,6 +40,9 @@ const vendorSchema = new mongoose.Schema({
     varified:{
         type:Boolean,
         default:false
+    },
+    profile:{
+        type:String
     }
    
 })
