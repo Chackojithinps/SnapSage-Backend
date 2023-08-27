@@ -21,12 +21,11 @@ const getStudios =  async(req,res)=>{
 
 const getCategories = async (req, res) => {
     try {
-        // console.log("entered getCategories addStudio11");
         const studioId  = req.query.id;
-        // console.log("req.paramas : ",studioId)
+        console.log("req.paramas : ",studioId)
         const studio = await Studio.findById(studioId).populate({
-            path: 'category.categories', // Populate the categories field inside the category array
-            model: 'category' // The name of the Category model
+            path: 'category.categories',
+            model: 'category'
         });
         const populatedCategories = studio.category.map(category => {
             const categoires = category.categories
@@ -35,17 +34,14 @@ const getCategories = async (req, res) => {
                 categories: categoires
             };
         });
-        // console.log("Populated Categories: ", populatedCategories);
 
         const categoryDatas = populatedCategories.map((item)=>(
              item.categories
         ))
        
-        // console.log("finalDatas : ",categoryDatas)
 
         res.status(200).json({ categoryDatas });
     } catch (error) {
-        // console.log("getCategories addStudio", error.message);
         res.status(500).json({ message: "Internal server error." });
     }
 }

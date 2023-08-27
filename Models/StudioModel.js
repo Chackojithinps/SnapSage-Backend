@@ -9,6 +9,10 @@ const studioSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Vendor'
     },
+    email:{
+        type:String,
+        required:true
+    },
     category: [
         {
             categories: {

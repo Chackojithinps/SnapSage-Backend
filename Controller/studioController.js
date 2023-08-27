@@ -20,11 +20,12 @@ const addStudio = async(req,res)=>{
         console.log("entered add Studio")
         // console.log(req.id)
         console.log("req.body items : ",req.body)
-        const { studioName, description, district, zipcode, categories,city} = req.body;
+        const { studioName, description,email, district, zipcode, categories,city} = req.body;
         const newStudio = new Studio({
             companyName: studioName,
             description: description,
             district: district,
+            email:email,
             city: city,
             pin: zipcode,
             vendorId:req.id,
@@ -36,7 +37,7 @@ const addStudio = async(req,res)=>{
             isBlocked: false // You might want to set this explicitly
         });
         const savedStudio = await newStudio.save();
-
+        res.status(200).json({success:true})
     } catch (error) {
         console.log("addStudio : ", error.message)
     }

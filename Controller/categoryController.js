@@ -42,6 +42,7 @@ const editCategory = async(req,res)=>{
         console.log("addCategoy : ",error.message)
     }
 }
+
 module.exports= {
     addCategory,getCategories,editCategory
 }
