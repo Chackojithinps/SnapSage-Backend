@@ -3,10 +3,9 @@ const multer = require('multer')
 const routes = express.Router()
 const userController = require('../Controller/userController')
 const userAuth = require('../Middlewares/userAuth')
-// const storage = require('../Middlewares/multer')
-
 const path = require('path')
-// const multer = require('multer')
+
+// ------------------------------Multer part------------------------------
 const storage = multer.diskStorage({
     destination:(req,file,cb)=>{
         console.log("multer enteed")
@@ -20,12 +19,17 @@ const storage = multer.diskStorage({
 const upload = multer({storage:storage})
 
 
+// --------------------------------User Routes-------------------------------
 routes.get('/',userController.getHome)
 routes.post('/register',userController.requestOTP)
 routes.post('/login',userController.postLogin)
 routes.post('/verifyOtp',userController.verifyOtp)
+
+// -----------------------------------User Profile---------------------------
 routes.get('/profile',userAuth.userAuth,userController.getProfile)
 routes.post('/upload',userAuth.userAuth,upload.single('file'),userController.profileUpload)
 
+// -----------------------------------Studios---------------------------
 routes.get('/getStudios',userController.getStudios)
+
 module.exports = routes
