@@ -24,6 +24,7 @@ routes.patch('/editCategory',categoryController.editCategory)
 
 // -------------------------Studio Management---------------------
 routes.get('/getUnvarifiedStudios',adminController.getUnvarifiedStudios)
+routes.patch('/verifyStudio',adminController.varifyStudio)
 
 
 

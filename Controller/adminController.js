@@ -255,6 +255,21 @@ const getUnvarifiedStudios = async(req,res)=>{
   }
 }
 
+// ----------------------------------------------------- Varify Studio ---------------------------------------------
+const varifyStudio = async (req,res) =>{
+  try {
+     console.log("entered varify Studio ")
+     console.log(req.query.id)
+     const unVarifiedUser = await Studio.updateOne({_id:req.query.id},{$set:{varified:true}})
+     console.log("unVarifiedUser : ",unVarifiedUser)
+     res.status(200).json({success: true})
+
+
+  } catch (error) {
+     console.log("varify vendor : ",error.message)
+  }
+}
+
   module.exports ={postLogin,
     getUserLists,
     getVendorLists,
@@ -263,5 +278,6 @@ const getUnvarifiedStudios = async(req,res)=>{
     getUnvarified,
     verifyVendor,
     rejectVendor,
-    getUnvarifiedStudios
+    getUnvarifiedStudios,
+    varifyStudio
   }

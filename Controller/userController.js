@@ -144,7 +144,7 @@ const profileUpload = async(req,res)=>{
 const getStudios = async (req,res)=>{
   try {
     console.log("entered getStudio page")
-    const studioDetails = await Studio.find().populate('images')
+    const studioDetails = await Studio.find({varified:true}).populate('images')
     console.log("studioDetails : ",studioDetails)
     res.status(200).json({success:true,studioDetails})
   } catch (error) {
