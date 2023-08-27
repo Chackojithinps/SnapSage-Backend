@@ -34,7 +34,7 @@ const addStudio = async(req,res)=>{
                 price: category.price,
             })),
 
-            isBlocked: false // You might want to set this explicitly
+            isBlocked: false 
         });
         const savedStudio = await newStudio.save();
         res.status(200).json({success:true})

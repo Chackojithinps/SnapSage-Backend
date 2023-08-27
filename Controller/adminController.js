@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 const Vendor = require('../Models/vendorModel')
 const bcrypt = require('bcryptjs')
 
-// -----------------------------------------Admin Login-------------------------------
+// ------------------------------------------------------- Admin Login -----------------------------------------------------
 
 const postLogin = async (req, res) => {
     try {
@@ -31,6 +31,7 @@ const postLogin = async (req, res) => {
     }
   };
 
+// --------------------------------------------------------Admin register -----------------------------------------------
 
   
 // const postRegister = async(req,res)=>{
@@ -50,6 +51,7 @@ const postLogin = async (req, res) => {
 //     }
 // }
 
+// --------------------------------------------------------Get User lists -----------------------------------------------
 
 const getUserLists = async(req,res)=>{
   try {
@@ -67,7 +69,6 @@ const getUserLists = async(req,res)=>{
       }
     }
     const UserLists = await User.find(query)
-    // console.log("userlists : ",UserLists)
     if(UserLists.length<1){
       console.log("no userlists")
        res.status(200).json({success:true,message:"No datas found"})
@@ -83,6 +84,7 @@ const getUserLists = async(req,res)=>{
   }
 }
 
+// ------------------------------------------------------- Get Vendor Lists -----------------------------------------------
 
 
 const getVendorLists = async(req,res)=>{
@@ -121,7 +123,7 @@ const getVendorLists = async(req,res)=>{
   }
 }
 
-// ----------------------------------------------Block User ----------------------------------------
+// -------------------------------------------------------------Block User --------------------------------------------------
 
 const blockUser = async(req,res)=>{
   try {
@@ -132,6 +134,8 @@ const blockUser = async(req,res)=>{
     console.log("block error user : ",error.message)
   }
 }
+
+// --------------------------------------------------------Unblock User -----------------------------------------------
 
 
 const unblockUser = async(req,res)=>{
@@ -145,7 +149,7 @@ const unblockUser = async(req,res)=>{
   }
 }
 
-// ---------------------------------------Get Unvarified vendor req-----------------------------------------------
+// --------------------------------------------- Get Unvarified vendor req -----------------------------------------------
 
 const getUnvarified = async(req,res)=>{
   try {
@@ -183,7 +187,7 @@ const getUnvarified = async(req,res)=>{
   }
 }
 
-// -------------------------------------Varify Vendor requests ----------------------------------
+// ---------------------------------------------------- Varify Vendor requests --------------------------------------------
 
 const verifyVendor = async (req,res) =>{
    try {
@@ -199,7 +203,7 @@ const verifyVendor = async (req,res) =>{
    }
 }
 
-// -------------------------------------Reject Vendor requests ----------------------------------
+// ----------------------------------------------------- Reject Vendor requests ---------------------------------------------
 
 const rejectVendor = async (req,res) =>{
   try {
@@ -215,25 +219,6 @@ const rejectVendor = async (req,res) =>{
   }
 }
 
-// -------------------------------------Search Vendorlists ----------------------------------
-
-// const searchVendorlists = async (req,res) =>{
-//   try {
-//      console.log("entered searchvendorlists ")
-//      const searchData = await Vendor.find({
-//       varified: true,
-//       $or: [
-//         { name: { $regex: req.body.searchText, $options: "i" } }, // Using regex for case-insensitive search on the 'name' field
-//         { email: { $regex: req.body.searchText, $options: "i" } }, // Using regex for case-insensitive search on the 'email' field
-//         // Add more fields as needed for search
-//       ],
-//     });
-//      console.log("searchdata : ",searchData)
-//      res.status(200).json({success: true})
-//   } catch (error) {
-//      console.log("varify vendor : ",error.message)
-//   }
-// }
   module.exports ={postLogin,
     getUserLists,
     getVendorLists,
@@ -242,5 +227,4 @@ const rejectVendor = async (req,res) =>{
     getUnvarified,
     verifyVendor,
     rejectVendor,
-    // searchVendorlists
   }

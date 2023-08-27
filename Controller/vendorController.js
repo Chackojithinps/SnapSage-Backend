@@ -35,7 +35,7 @@ const requestOTP = async (req, res) => {
   }
 };
 
-// -------------------------------------Verify Otp Vendor Side ----------------->
+// -------------------------------------Verify Otp Vendor Side -------------------------------
 
 const verifyOtp = async (req, res) => {
   try {
@@ -83,7 +83,7 @@ const verifyOtp = async (req, res) => {
   }
 }
 
-// ----------------------------------Vendor Login --------------------------------
+// -------------------------------------------- Vendor Login -----------------------------------------
 
 const postLogin = async (req, res) => {
   try {

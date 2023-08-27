@@ -10,7 +10,7 @@ const authToken = 'af63eb70143e97471fbf46e459f3cba8';
 const client = require('twilio')(accountSID,authToken)
 let userDatas = null;
 
-
+// -------------------------------------------------Get Home page-------------------------------------------
 const getHome = async (req, res) => {
   try {
     console.log('Homeapge');
@@ -19,6 +19,7 @@ const getHome = async (req, res) => {
     console.log('Home', error.message);
   }
 };
+// -------------------------------------------------Post user Login -------------------------------------------
 
 const postLogin = async (req, res) => {
   try {
@@ -52,6 +53,8 @@ const postLogin = async (req, res) => {
   }
 };
 
+// -------------------------------------------------Request Otp -------------------------------------------
+
 const requestOTP = async (req, res) => {
   try {
     const { phone } = req.body;
@@ -71,6 +74,8 @@ const requestOTP = async (req, res) => {
     res.status(500).json({ message: 'Failed to send OTP' });
   }
 };
+
+// ------------------------------------------------- varify otp -------------------------------------------
 
 const verifyOtp = async(req,res)=>{
     try {
@@ -105,6 +110,8 @@ const verifyOtp = async(req,res)=>{
     }
 }
 
+// -------------------------------------------------Get profile -------------------------------------------
+
 const getProfile = async(req,res)=>{
   try {
     console.log("getProfile")
@@ -118,6 +125,7 @@ const getProfile = async(req,res)=>{
     console.log("getProfile",error.message)
   }
 }
+// ------------------------------------------------- profile pic upload -------------------------------------------
 
 const profileUpload = async(req,res)=>{
   try {
@@ -131,12 +139,12 @@ const profileUpload = async(req,res)=>{
   }
 }
 
+// --------------------------------------------------- Get Studios -------------------------------------------
+
 const getStudios = async (req,res)=>{
   try {
     console.log("entered getStudio page")
     const studioDetails = await Studio.find().populate('images')
-    // const studioImages = await studioImg.find().populate("studioId")
-    // console.log("studioImages : ",studioImages)
     console.log("studioDetails : ",studioDetails)
     res.status(200).json({success:true,studioDetails})
   } catch (error) {
