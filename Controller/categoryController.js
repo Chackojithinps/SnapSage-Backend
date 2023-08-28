@@ -8,6 +8,10 @@ const addCategory = async(req,res)=>{
         console.log("reached category")
         const {category} = req.body
         console.log(category)
+        const categoryDetails = await Category.findOne({categoryName:category})
+        if(categoryDetails){
+            return res.status(200).json({exists:true,message:"Category already Exists"})
+        }
         const categoryData = new Category({
             categoryName:category
         })
