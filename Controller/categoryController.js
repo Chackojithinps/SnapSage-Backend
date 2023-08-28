@@ -38,8 +38,10 @@ const getCategories = async(req,res)=>{
 const editCategory = async(req,res)=>{
     try {
         const {category} = req.body
-        console.log(req.query.id);
-        console.log(category)
+        const categoryDetails = await Category.findOne({categoryName:category})
+        if(categoryDetails){
+            return res.status(200).json({exists:true,message:"Category already Exists"})
+        }
         const categoryDatas = await Category.findOneAndUpdate({_id:req.query.id},{$set:{categoryName:category}})
         res.status(200).json({message:"Category successfully added",categoryDatas})
     } catch (error) {
