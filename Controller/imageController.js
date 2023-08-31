@@ -143,6 +143,9 @@ const getStudioImages = async(req,res)=>{
         const categoryDataWithImages = studioDatas.images.map((imageItem)=>(
              imageItem
         ))
+        if(!categoryDataWithImages){
+            return res.status(404).json({success:false})
+        }
         console.log("****************",categoryDataWithImages)
         res.status(200).json({success:true,categoryDataWithImages})
     } catch (error) {

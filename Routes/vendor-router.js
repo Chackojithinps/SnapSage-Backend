@@ -34,6 +34,6 @@ routes.post('/addStudio',vendorAuth.partnerAuth,studioController.addStudio)
 // ----------------------------------- Studio ---------------------------
 routes.get('/getStudios',vendorAuth.partnerAuth,imageController.getStudios)
 routes.get('/getimageCategories',vendorAuth.partnerAuth,imageController.getCategories)
-routes.post('/uploadStudioimg',vendorAuth.partnerAuth,upload.array('file',30), imageController.uploadImages)
+routes.post('/uploadStudioimg',vendorAuth.partnerAuth,upload.array('file',50), imageController.uploadImages)
 routes.get('/getStudioImages',vendorAuth.partnerAuth,imageController.getStudioImages)
 module.exports= routes
