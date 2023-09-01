@@ -144,7 +144,15 @@ const profileUpload = async(req,res)=>{
 const getStudios = async (req,res)=>{
   try {
     console.log("entered getStudio page")
-    const studioDetails = await Studio.find({varified:true}).populate('images')
+    // const studioDetails = await Studio.find({varified:true}).populate('images')
+    const studioDetails = await Studio.find({ varified: true })
+    .populate({
+      path: 'images',
+      populate: {
+        path: 'images.categoryId', // Populate categoryId within the images array
+        model: 'category', // Replace 'category' with the correct model name
+      },
+    }).populate('category.categories')
     console.log("studioDetails : ",studioDetails)
     res.status(200).json({success:true,studioDetails})
   } catch (error) {
