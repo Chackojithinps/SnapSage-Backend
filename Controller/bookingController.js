@@ -48,7 +48,8 @@ const Bookings = async (req,res) =>{
             ]
           };
         }
-        const BookingDatas = await Booking.find(query)
+        const BookingDatas = await Booking.find(query).populate('categories.categoryId')
+        console.log("bookingDatas : ",BookingDatas)
         console.log(BookingDatas.length)
         if(BookingDatas.length<1){
           console.log("no vendorlists")
@@ -64,6 +65,18 @@ const Bookings = async (req,res) =>{
     }
 }
 
+
+const acceptBooking = async(req,res)=>{
+    try {
+        console.log("accept bookings")
+        console.log("req.id ",req.query.id)
+        const updateBookings = await Booking.updateOne({_id:req.query.id},{$set:{bookingStatus:true}})
+        res.status(200).json({success:true,updateBookings})
+
+    } catch (error) {
+        console.log("accept bookings: ", error.message);
+    }
+}
 module.exports = {
-  bookingRequest,Bookings
+  bookingRequest,Bookings,acceptBooking
 }

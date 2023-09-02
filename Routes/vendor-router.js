@@ -41,5 +41,6 @@ routes.get('/getStudioImages',vendorAuth.partnerAuth,imageController.getStudioIm
 
 // ----------------------------------- Studio ---------------------------
 routes.get('/bookings',bookingController.Bookings)
+routes.patch('/acceptBooking',bookingController.acceptBooking)
 
 module.exports= routes
