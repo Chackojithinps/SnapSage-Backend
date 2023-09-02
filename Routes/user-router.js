@@ -2,6 +2,7 @@ const express = require('express')
 const multer = require('multer')
 const routes = express.Router()
 const userController = require('../Controller/userController')
+const bookingController = require('../Controller/bookingController')
 const userAuth = require('../Middlewares/userAuth')
 const path = require('path')
 
@@ -31,5 +32,9 @@ routes.post('/upload',userAuth.userAuth,upload.single('file'),userController.pro
 
 // -----------------------------------Studios---------------------------
 routes.get('/getStudios',userController.getStudios)
+
+//------------------------------------Bookings---------------------------
+
+routes.post('/bookStudio',userAuth.userAuth,bookingController.bookingRequest)
 
 module.exports = routes

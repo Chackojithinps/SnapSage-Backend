@@ -6,6 +6,8 @@ const vendorAuth = require('../Middlewares/partnerAuth')
 const vendorController = require('../Controller/vendorController')
 const studioController = require('../Controller/studioController')
 const imageController = require('../Controller/imageController')
+const bookingController = require('../Controller/bookingController')
+
 const path = require('path')
 
 // -----------------------------------Multer---------------------------
@@ -36,4 +38,8 @@ routes.get('/getStudios',vendorAuth.partnerAuth,imageController.getStudios)
 routes.get('/getimageCategories',vendorAuth.partnerAuth,imageController.getCategories)
 routes.post('/uploadStudioimg',vendorAuth.partnerAuth,upload.array('file',50), imageController.uploadImages)
 routes.get('/getStudioImages',vendorAuth.partnerAuth,imageController.getStudioImages)
+
+// ----------------------------------- Studio ---------------------------
+routes.get('/bookings',bookingController.Bookings)
+
 module.exports= routes
