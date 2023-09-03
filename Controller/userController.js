@@ -138,7 +138,20 @@ const profileUpload = async(req,res)=>{
     console.log("profilpic",error.message)
   }
 }
-
+// --------------------------------------------------- Get Studios -------------------------------------------
+const getProfileData = async(req,res)=>{
+  try {
+    console.log("getProfiledata")
+    console.log(req.id)
+    const userDetail = await User.findOne({_id:req.id})
+    if(!userDetail){
+      return res.status(401).json({message:"Not protected",success:false})
+    }
+    return res.status(200).json({success:true,userDetail})
+  } catch (error) {
+    console.log("getProfile",error.message)
+  }
+}
 // --------------------------------------------------- Get Studios -------------------------------------------
 
 const getStudios = async (req,res)=>{
@@ -167,5 +180,6 @@ module.exports = {
   requestOTP,
   getProfile,
   profileUpload,
-  getStudios
+  getStudios,
+  getProfileData
 };

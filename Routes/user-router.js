@@ -29,6 +29,7 @@ routes.post('/verifyOtp',userController.verifyOtp)
 // -----------------------------------User Profile---------------------------
 routes.get('/profile',userAuth.userAuth,userController.getProfile)
 routes.post('/upload',userAuth.userAuth,upload.single('file'),userController.profileUpload)
+routes.get('/getProfileData',userAuth.userAuth,userController.getProfileData)
 
 // -----------------------------------Studios---------------------------
 routes.get('/getStudios',userController.getStudios)
@@ -36,5 +37,6 @@ routes.get('/getStudios',userController.getStudios)
 //------------------------------------Bookings---------------------------
 
 routes.post('/bookStudio',userAuth.userAuth,bookingController.bookingRequest)
+routes.get('/bookings',userAuth.userAuth,bookingController.bookingList)
 
 module.exports = routes

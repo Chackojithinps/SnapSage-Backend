@@ -77,6 +77,18 @@ const acceptBooking = async(req,res)=>{
         console.log("accept bookings: ", error.message);
     }
 }
+
+const bookingList = async(req,res) =>{
+  try {
+    console.log(" bookings List")
+    console.log("req.id ",req.id)
+    const BookingList = await Booking.findOne({user:req.id})
+    console.log("BookingList : ",BookingList)
+    res.status(200).json({success:true,BookingList})
+  } catch (error) {
+    console.log("bookingList : ",error.message)
+  }
+}
 module.exports = {
-  bookingRequest,Bookings,acceptBooking
+  bookingRequest,Bookings,acceptBooking,bookingList
 }
