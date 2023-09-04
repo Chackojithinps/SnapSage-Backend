@@ -38,5 +38,7 @@ routes.get('/getStudios',userController.getStudios)
 
 routes.post('/bookStudio',userAuth.userAuth,bookingController.bookingRequest)
 routes.get('/bookings',userAuth.userAuth,bookingController.bookingList)
+routes.post('/payment',userAuth.userAuth,bookingController.payment)
+routes.post('/verifyPayment',userAuth.userAuth,bookingController.VarifyPayment)
 
 module.exports = routes
