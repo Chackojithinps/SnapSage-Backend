@@ -1,4 +1,8 @@
 const Booking = require('../Models/bookingSchema');
+const Photos = require('../Models/photoSchema')
+const Studio = require('../Models/StudioModel')
+
+// ------------------------------------------booking req by user ---------------------------------------------
 
 const bookingRequest = async (req, res) => {
   try {
@@ -21,14 +25,14 @@ const bookingRequest = async (req, res) => {
     });
 
     await bookingData.save();
-    // console.log(bookingData);
-
     res.status(201).json({ success: true, bookingData });
   } catch (error) {
     console.log("booking request: ", error.message);
     res.status(500).json({ success: false, error: error.message });
   }
 }
+
+// ------------------------------------------Get booking req in vendor Side---------------------------------------------
 
 const Bookings = async (req,res) =>{
     try {
@@ -65,6 +69,7 @@ const Bookings = async (req,res) =>{
     }
 }
 
+// ------------------------------------------Accept booking studio by user in vendor side---------------------------------------------
 
 const acceptBooking = async(req,res)=>{
     try {
@@ -78,17 +83,37 @@ const acceptBooking = async(req,res)=>{
     }
 }
 
+// ------------------------------------------Get booked list in user Side---------------------------------------------
+
 const bookingList = async(req,res) =>{
   try {
     console.log(" bookings List")
     console.log("req.id ",req.id)
-    const BookingList = await Booking.findOne({user:req.id})
+    const BookingList = await Booking.find({user:req.id}).populate('studio').populate('categories.categoryId').exec();
+    await Studio.populate(BookingList, {
+      path: 'studio.images',
+      model: 'photos'
+    });
+    
     console.log("BookingList : ",BookingList)
+    // const photos = await Photos.findOne({studioId:BookingList.studio._id})
+    // console.log("Photos : ",photos)
     res.status(200).json({success:true,BookingList})
   } catch (error) {
     console.log("bookingList : ",error.message)
   }
 }
+
+const payment = async(req,res)=>{
+  try {
+      console.log("entetered payment")
+      
+  } catch (error) {
+    console.log("payment",error.message)
+  }
+}
+
+
 module.exports = {
   bookingRequest,Bookings,acceptBooking,bookingList
 }
