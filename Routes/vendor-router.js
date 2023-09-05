@@ -40,7 +40,8 @@ routes.post('/uploadStudioimg',vendorAuth.partnerAuth,upload.array('file',50), i
 routes.get('/getStudioImages',vendorAuth.partnerAuth,imageController.getStudioImages)
 
 // ----------------------------------- Studio ---------------------------
-routes.get('/bookings',bookingController.Bookings)
-routes.patch('/acceptBooking',bookingController.acceptBooking)
+routes.get('/bookings',vendorAuth.partnerAuth,bookingController.Bookings)
+routes.patch('/acceptBooking',vendorAuth.partnerAuth,bookingController.acceptBooking)
+routes.get('/upcomingEvents',vendorAuth.partnerAuth,bookingController.upcomingEvents)
 
 module.exports= routes

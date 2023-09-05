@@ -2,6 +2,7 @@ const Booking = require('../Models/bookingSchema');
 const Photos = require('../Models/photoSchema')
 const Studio = require('../Models/StudioModel')
 const Razorpay = require('razorpay');
+const mongoose= require('mongoose')
 const crypto = require('crypto')
 // ------------------------------------------booking req by user ---------------------------------------------
 
@@ -37,6 +38,7 @@ const bookingRequest = async (req, res) => {
 
 const Bookings = async (req, res) => {
   try {
+    console.log('req.id hello: ',req.id)
     console.log("getting booking list")
     const searchData = req.query.search
     console.log("serachdata : ", searchData)
@@ -52,9 +54,15 @@ const Bookings = async (req, res) => {
           { email: { $regex: searchData, $options: "i" } }
         ]
       };
-    }
-    const BookingDatas = await Booking.find(query).populate('categories.categoryId')
-    console.log("bookingDatas : ", BookingDatas)
+   
+    }    
+    
+    const BookingData = await Booking.find(query).populate('studio').populate('categories.categoryId')
+
+    const BookingDatas = BookingData.filter(booking => booking.studio.vendorId.toString() === req.id.toString());
+
+    // console.log("bookingDatas : ", BookingDatas)
+    console.log("filteredBookingDatas : ", BookingDatas)
     console.log(BookingDatas.length)
     if (BookingDatas.length < 1) {
       console.log("no vendorlists")
@@ -84,21 +92,19 @@ const acceptBooking = async (req, res) => {
   }
 }
 
-// ------------------------------------------Get booked list in user Side---------------------------------------------
+// ------------------------------------------ Get booked list in user Side ---------------------------------------------
 
 const bookingList = async (req, res) => {
   try {
     console.log(" bookings List")
     console.log("req.id ", req.id)
+    
     const BookingList = await Booking.find({ user: req.id }).populate('studio').populate('categories.categoryId').exec();
     await Studio.populate(BookingList, {
       path: 'studio.images',
       model: 'photos'
     });
-
-    console.log("BookingList : ", BookingList)
-    // const photos = await Photos.findOne({studioId:BookingList.studio._id})
-    // console.log("Photos : ",photos)
+        console.log("BookingList : ", BookingList)
     res.status(200).json({ success: true, BookingList })
   } catch (error) {
     console.log("bookingList : ", error.message)
@@ -110,10 +116,6 @@ const bookingList = async (req, res) => {
 const payment = async (req, res) => {
   try {
     console.log("entetered payment")
-    // console.log("req.id : ",req.id)
-    // console.log("booking id : ",req.query.id)
-    // console.log("req.amount : ",req.body.amount)
-
     var instance = new Razorpay({
       key_id:'rzp_test_Qt18oumm8k0BKa' ,
       key_secret: 'vZ035cWAKANlYeO7bZxShcNT'
@@ -128,11 +130,6 @@ const payment = async (req, res) => {
       }
       return res.send({ code: 200, success: true, message: 'order created', data: order })
     })
-
-  // const bookingData = await Booking.findOne({_id:req.query.id})
-  // console.log("bookingData : ",bookingData)
-  // razorData=await Razorpay.initiateRazorpay(req.query.id,req.body.amount)
-  // res.status(200).json({success:true,razorData,bookingData})
 
 } catch (error) {
   console.log("payment", error.message)
@@ -163,6 +160,45 @@ const VarifyPayment = async (req, res) => {
     console.log("bookingList : ", error.message)
   }
 }
+// ------------------------------------------------------------upcoming requests---------------------------------------------
+
+const upcomingEvents = async (req, res) => {
+  try {
+    console.log("entered upcomingreues")
+    console.log('req.id hello: ',req.id)
+    const searchData = req.query.search
+    console.log("serachdata : ", searchData)
+
+    let query = { bookingStatus: true }
+    if (searchData) {
+      query = {
+        bookingStatus: true,
+        $or: [
+          { name: { $regex: searchData, $options: "i" } },
+          { place: { $regex: searchData, $options: "i" } },
+          { eventDate: { $regex: searchData, $options: "i" } },
+          { email: { $regex: searchData, $options: "i" } }
+        ]
+      };
+   
+    }    
+    const BookingData = await Booking.find(query).populate('studio').populate('categories.categoryId')
+    // console.log("bookingdata 1 : : : ",: ])
+    const BookingDatas = BookingData.filter(booking => booking.studio.vendorId.toString() === req.id.toString());
+    console.log("filteredBookingDatas : ", BookingDatas)
+    console.log(BookingDatas.length)
+    if (BookingDatas.length < 1) {
+      console.log("no vendorlists")
+      res.status(200).json({ success: true, message: "No datas found" })
+
+    } else {
+      console.log("eheeeee")
+      return res.status(200).json({ success: true, BookingDatas })
+    }
+  } catch (error) {
+    console.log("bookings: ", error.message);
+  }
+}
 module.exports = {
-  bookingRequest, Bookings, acceptBooking, bookingList, payment,VarifyPayment
+  bookingRequest, Bookings, acceptBooking, bookingList, payment,VarifyPayment,upcomingEvents
 }
