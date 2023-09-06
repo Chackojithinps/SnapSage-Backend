@@ -13,9 +13,13 @@ const bookingSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    name:{
+    district:{
         type:String,
-        required:true
+        // required:true
+    },
+    city:{
+        type:String,
+        // required:true
     },
     email:{
         type:String,

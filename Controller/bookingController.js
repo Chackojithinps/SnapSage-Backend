@@ -11,12 +11,14 @@ const bookingRequest = async (req, res) => {
   try {
     console.log("entered booking");
     console.log(req.id)
-    const { name, message, email, phone, eventDate, totalAmount, categories, studioId } = req.body;
+    const { message, email, phone, district, city, eventDate, totalAmount, categories, studioId } = req.body;
+    console.log("message : ",message)
     console.log("req.body : ", req.body)
     const bookingData = new Booking({
       user: req.id,
       studio: studioId,
-      name,
+      district,
+      city,
       message,
       email,
       phone,
