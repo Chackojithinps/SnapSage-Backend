@@ -244,6 +244,60 @@ const unpaidBookings = async (req, res) => {
   }
 }
 
+// ------------------------------------------------------------Finish Work---------------------------------------------
+
+const finishWork = async (req, res) => {
+  try {
+    console.log("finished work bookings")
+    console.log("req.id ", req.query.id)
+    const updateBookings = await Booking.updateOne({ _id: req.query.id }, { $set: { workStatus: true } })
+    res.status(200).json({ success: true, updateBookings })
+
+  } catch (error) {
+    console.log("accept bookings: ", error.message);
+  }
+}
+
+// ------------------------------------------------------------Work History---------------------------------------------
+
+
+const workHistory = async (req, res) => {
+  try {
+    console.log("entered work hsitory")
+    console.log('req.id hello: ', req.id)
+    const searchData = req.query.search
+    console.log("serachdata : ", searchData)
+
+    let query = { workStatus:true }
+    if (searchData) {
+      query = {
+        bookingStatus: true,
+        $or: [
+          { name: { $regex: searchData, $options: "i" } },
+          { place: { $regex: searchData, $options: "i" } },
+          { eventDate: { $regex: searchData, $options: "i" } },
+          { email: { $regex: searchData, $options: "i" } }
+        ]
+      };
+
+    }
+
+    const BookingData = await Booking.find(query).populate('studio').populate('categories.categoryId')
+    const BookingDatas = BookingData.filter(booking => booking.studio.vendorId.toString() === req.id.toString());
+    console.log("filteredBookingDatas : ", BookingDatas)
+    console.log(BookingDatas.length)
+    if (BookingDatas.length < 1) {
+      console.log("no vendorlists")
+      res.status(200).json({ success: true, message: "No datas found" })
+
+    } else {
+      console.log("eheeeee")
+      return res.status(200).json({ success: true, BookingDatas })
+    }
+  } catch (error) {
+    console.log("bookings: ", error.message);
+  }
+}
 module.exports = {
   bookingRequest,
   Bookings,
@@ -252,5 +306,7 @@ module.exports = {
   payment,
   VarifyPayment,
   upcomingEvents,
-  unpaidBookings
+  unpaidBookings,
+  finishWork,
+  workHistory
 }

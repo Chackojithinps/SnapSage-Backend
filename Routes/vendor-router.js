@@ -44,5 +44,7 @@ routes.get('/bookings',vendorAuth.partnerAuth,bookingController.Bookings)
 routes.patch('/acceptBooking',vendorAuth.partnerAuth,bookingController.acceptBooking)
 routes.get('/upcomingEvents',vendorAuth.partnerAuth,bookingController.upcomingEvents)
 routes.get('/unpaidBookings',vendorAuth.partnerAuth,bookingController.unpaidBookings)
+routes.patch('/finishWork',vendorAuth.partnerAuth,bookingController.finishWork)
+routes.get('/workHistory',vendorAuth.partnerAuth,bookingController.workHistory)
 
 module.exports= routes
