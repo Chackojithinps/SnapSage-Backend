@@ -5,6 +5,25 @@ const Razorpay = require('razorpay');
 const mongoose = require('mongoose')
 const crypto = require('crypto')
 
+// ------------------------------------------booking History ---------------------------------------------
+
+const bookingHistory = async (req, res) => {
+  try {
+    console.log(" bookings History")
+    console.log("req.id ", req.id)
+
+    const BookingList = await Booking.find({user:req.id,workStatus:true}).populate('studio').populate('categories.categoryId').exec();
+    await Studio.populate(BookingList, {
+      path: 'studio.images',
+      model: 'photos'
+    });
+    console.log("BookingList : ", BookingList)
+    res.status(200).json({ success: true, BookingList })
+  } catch (error) {
+    console.log("bookingList : ", error.message)
+  }
+}
+
 // ------------------------------------------booking req by user ---------------------------------------------
 
 const bookingRequest = async (req, res) => {
@@ -44,7 +63,7 @@ const bookingList = async (req, res) => {
     console.log(" bookings List")
     console.log("req.id ", req.id)
 
-    const BookingList = await Booking.find({ user: req.id }).populate('studio').populate('categories.categoryId').exec();
+    const BookingList = await Booking.find({ user: req.id ,workStatus:false}).populate('studio').populate('categories.categoryId').exec();
     await Studio.populate(BookingList, {
       path: 'studio.images',
       model: 'photos'
@@ -175,16 +194,16 @@ const upcomingEvents = async (req, res) => {
       query = {
         bookingStatus: true,
         $or: [
-          { name: { $regex: searchData, $options: "i" } },
-          { place: { $regex: searchData, $options: "i" } },
-          { eventDate: { $regex: searchData, $options: "i" } },
-          { email: { $regex: searchData, $options: "i" } }
+          { name: { $regex: searchData, $options: "i" }},
+          { place: { $regex: searchData, $options: "i" }},
+          { eventDate: { $regex: searchData, $options: "i" }},
+          { email: { $regex: searchData, $options: "i"}}
         ]
       };
 
     }
+    query.workStatus = false;
     query.advanceAmount = { $exists: true };
-
     const BookingData = await Booking.find(query).populate('studio').populate('user').populate('categories.categoryId')
     // console.log("bookingdata 1 : : : ",: ])
     const BookingDatas = BookingData.filter(booking => booking.studio.vendorId.toString() === req.id.toString());
@@ -308,5 +327,6 @@ module.exports = {
   upcomingEvents,
   unpaidBookings,
   finishWork,
-  workHistory
+  workHistory,
+  bookingHistory
 }

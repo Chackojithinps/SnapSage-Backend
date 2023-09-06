@@ -40,5 +40,6 @@ routes.post('/bookStudio',userAuth.userAuth,bookingController.bookingRequest)
 routes.get('/bookings',userAuth.userAuth,bookingController.bookingList)
 routes.post('/payment',userAuth.userAuth,bookingController.payment)
 routes.post('/verifyPayment',userAuth.userAuth,bookingController.VarifyPayment)
+routes.get('/bookingHistory',userAuth.userAuth,bookingController.bookingHistory)
 
 module.exports = routes
