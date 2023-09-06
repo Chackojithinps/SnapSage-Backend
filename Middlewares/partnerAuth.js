@@ -4,9 +4,9 @@ const jwt = require('jsonwebtoken')
 const partnerAuth = (req,res,next)=>{
     try {
         console.log("partnerAuth entered")
-        // console.log(req.headers)
+        console.log(req.headers)
         const token = req.headers[`authorization`]
-        // console.log("token in userAuth : ",token)
+        console.log("token in userAuth : ",token)
         const tokenwithoutBearer = token.split(" ")[1]
         // console.log("kkkkkkkkkkkkkk", tokenwithoutBearer)
         jwt.verify(tokenwithoutBearer,process.env.JWT_VENDOR_SECRET_KEY,(err,encoded)=>{
@@ -19,7 +19,7 @@ const partnerAuth = (req,res,next)=>{
             }
         })
     }catch (error) {
-        console.log("userAuth failed : ",error.message)
+        console.log("partner auth failed : ",error.message)
     }
 }
 module.exports = {partnerAuth}
