@@ -39,9 +39,10 @@ routes.get('/getimageCategories',vendorAuth.partnerAuth,imageController.getCateg
 routes.post('/uploadStudioimg',vendorAuth.partnerAuth,upload.array('file',50), imageController.uploadImages)
 routes.get('/getStudioImages',vendorAuth.partnerAuth,imageController.getStudioImages)
 
-// ----------------------------------- Studio ---------------------------
+// ----------------------------------- bookings ---------------------------
 routes.get('/bookings',vendorAuth.partnerAuth,bookingController.Bookings)
 routes.patch('/acceptBooking',vendorAuth.partnerAuth,bookingController.acceptBooking)
 routes.get('/upcomingEvents',vendorAuth.partnerAuth,bookingController.upcomingEvents)
+routes.get('/unpaidBookings',vendorAuth.partnerAuth,bookingController.unpaidBookings)
 
 module.exports= routes
