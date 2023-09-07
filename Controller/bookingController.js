@@ -4,6 +4,8 @@ const Studio = require('../Models/StudioModel')
 const Razorpay = require('razorpay');
 const mongoose = require('mongoose')
 const crypto = require('crypto')
+const nodemailer = require("nodemailer");
+
 
 // ------------------------------------------booking History ---------------------------------------------
 
@@ -126,7 +128,7 @@ const VarifyPayment = async (req, res) => {
     console.log("bookingList : ", error.message)
   }
 }
-// ------------------------------------------Get booking req in vendor Side---------------------------------------------
+// ------------------------------------------ Get booking req in vendor Side ---------------------------------------------
 
 const Bookings = async (req, res) => {
   try {
@@ -165,12 +167,50 @@ const Bookings = async (req, res) => {
   }
 }
 
-// ------------------------------------------Accept booking studio by user in vendor side---------------------------------------------
+// ---------------------------------------------------sent Mail--------------------------------------------------------------
+
+const sendOTP = async (email,message) => {
+  // Create transporter object to send email
+  console.log("enetered sendOtp to mail")
+  const transporter = nodemailer.createTransport({
+    host: "smpt.gmail.com",
+    port: 587,
+    secure: false,
+    requireTLS: true,
+    service: "Gmail",
+    auth: {
+      user:"jithinchackopayyanat@gmail.com",
+      pass:"pexpekvbwxmqujlh",
+    },
+  });
+  const mailOptions = {
+    from: "jithinchackopayyanat@gmail.com",
+    to: email,
+    subject: "OTP Verification",
+    html: `<h4 style='black'>${message}</h4>`,
+  };
+  try {
+    // Send email with OTP
+    await transporter.sendMail(mailOptions);
+
+    // Return success response
+    console.log("OTP sent successfully");
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to send OTP");
+  }
+};
+
+// ------------------------------------------ Accept booking studio by user in vendor side ---------------------------------------------
 
 const acceptBooking = async (req, res) => {
   try {
     console.log("accept bookings")
+    console.log("req.email : ",req.body.email)
+    const email = req.body.email
+    const message = 'Your Request Accepted by the Vendor. You can Now make payment to the vendor.'
     console.log("req.id ", req.query.id)
+    sendOTP(email,message);
     const updateBookings = await Booking.updateOne({ _id: req.query.id }, { $set: { bookingStatus: true } })
     res.status(200).json({ success: true, updateBookings })
 
@@ -178,8 +218,6 @@ const acceptBooking = async (req, res) => {
     console.log("accept bookings: ", error.message);
   }
 }
-
-
 // ------------------------------------------------------------upcoming events ---------------------------------------------
 
 const upcomingEvents = async (req, res) => {
