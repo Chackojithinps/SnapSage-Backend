@@ -46,5 +46,6 @@ routes.get('/upcomingEvents',vendorAuth.partnerAuth,bookingController.upcomingEv
 routes.get('/unpaidBookings',vendorAuth.partnerAuth,bookingController.unpaidBookings)
 routes.patch('/finishWork',vendorAuth.partnerAuth,bookingController.finishWork)
 routes.get('/workHistory',vendorAuth.partnerAuth,bookingController.workHistory)
+routes.post('/rejectUnpaiduser',vendorAuth.partnerAuth,bookingController.rejectUnpaiduser)
 
 module.exports= routes

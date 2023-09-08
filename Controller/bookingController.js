@@ -12,9 +12,16 @@ const nodemailer = require("nodemailer");
 const bookingHistory = async (req, res) => {
   try {
     console.log(" bookings History")
-    console.log("req.id ", req.id)
+    console.log("req.id ", req.id)  
 
-    const BookingList = await Booking.find({user:req.id,workStatus:true}).populate('studio').populate('categories.categoryId').exec();
+    // const BookingList = await Booking.find({user:req.id,workStatus:true}).populate('studio').populate('categories.categoryId').exec();
+    const BookingList = await Booking.find({
+      user: req.id,
+      $or: [
+        { workStatus: true },
+        { isCancelled: true }
+      ]
+    }).populate('studio').populate('categories.categoryId').exec();
     await Studio.populate(BookingList, {
       path: 'studio.images',
       model: 'photos'
@@ -65,7 +72,15 @@ const bookingList = async (req, res) => {
     console.log(" bookings List")
     console.log("req.id ", req.id)
 
-    const BookingList = await Booking.find({ user: req.id ,workStatus:false}).populate('studio').populate('categories.categoryId').exec();
+    // const BookingList = await Booking.find({ user: req.id ,$or:[workStatus:false,isCancelled:false]}).populate('studio').populate('categories.categoryId').exec();
+    const BookingList = await Booking.find({
+      user: req.id,
+      $or: [
+        { workStatus: false },
+        { isCancelled: false }                                          
+      ]
+    }).populate('studio').populate('categories.categoryId').exec();
+   
     await Studio.populate(BookingList, {
       path: 'studio.images',
       model: 'photos'
@@ -214,7 +229,6 @@ const acceptBooking = async (req, res) => {
     sendOTP(email,message,subject);
     const updateBookings = await Booking.updateOne({ _id: req.query.id }, { $set: { bookingStatus: true } })
     res.status(200).json({ success: true, updateBookings })
-
   } catch (error) {
     console.log("accept bookings: ", error.message);
   }
@@ -273,8 +287,9 @@ const unpaidBookings = async (req, res) => {
     let query = { bookingStatus: true }
     if (searchData) {
       query = {
-        bookingStatus: true,
+       
         $or: [
+          { bookingStatus: true},
           { name: { $regex: searchData, $options: "i" } },
           { place: { $regex: searchData, $options: "i" } },
           { eventDate: { $regex: searchData, $options: "i" } },
@@ -283,6 +298,7 @@ const unpaidBookings = async (req, res) => {
       };
 
     }
+    query.isCancelled={ $exists: false };
     query.advanceAmount = { $exists: false };
 
     const BookingData = await Booking.find(query).populate('studio').populate('categories.categoryId')
@@ -356,6 +372,18 @@ const workHistory = async (req, res) => {
     console.log("bookings: ", error.message);
   }
 }
+// ------------------------------------------------------------Work rejct by vendor---------------------------------------------
+const rejectUnpaiduser=async(req,res)=>{
+  try {
+    console.log("Entered reject unpaid")
+    console.log(req.query.id)
+    const updatedData = await Booking.updateOne({_id:req.query.id},{$set:{isCancelled:true}})
+    return res.status(200).json({ success: true })
+  } catch (error) {
+    console.log("rejectunpaid: ", error.message);
+  }
+}
+
 module.exports = {
   bookingRequest,
   Bookings,
@@ -367,5 +395,6 @@ module.exports = {
   unpaidBookings,
   finishWork,
   workHistory,
-  bookingHistory
+  bookingHistory,
+  rejectUnpaiduser
 }
