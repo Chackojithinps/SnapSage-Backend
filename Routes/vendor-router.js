@@ -21,8 +21,8 @@ const storage = multer.diskStorage({
 const upload = multer({storage:storage})
 
 // -----------------------------------Vendor routes---------------------------
-routes.post('/register',upload.array('image',5),vendorController.requestOTP)
-routes.post('/verifyOtp',vendorController.verifyOtp)
+routes.post('/register',upload.array('image',5),vendorController.vendorSignup)
+// routes.post('/verifyOtp',vendorController.verifyOtp)
 routes.post('/login',vendorController.postLogin)
 
 // -----------------------------------Vendor Profile---------------------------

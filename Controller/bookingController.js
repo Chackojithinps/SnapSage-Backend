@@ -74,11 +74,7 @@ const bookingList = async (req, res) => {
 
     // const BookingList = await Booking.find({ user: req.id ,$or:[workStatus:false,isCancelled:false]}).populate('studio').populate('categories.categoryId').exec();
     const BookingList = await Booking.find({
-      user: req.id,
-      $or: [
-        { workStatus: false },
-        { isCancelled: false }                                          
-      ]
+      user: req.id,workStatus:false,isCancelled:false
     }).populate('studio').populate('categories.categoryId').exec();
    
     await Studio.populate(BookingList, {
@@ -283,40 +279,24 @@ const unpaidBookings = async (req, res) => {
     console.log('req.id hello: ', req.id)
     const searchData = req.query.search
     console.log("serachdata : ", searchData)
+    let query =  { bookingStatus: true, isCancelled: false }
+    if (searchData) {
+      query = {
+      
+        $or: [
+          { name: { $regex: searchData, $options: "i" } },
+          { place: { $regex: searchData, $options: "i" } },
+          { email: { $regex: searchData, $options: "i" } }
+        ]
+      };
+      
+    }
     
-    // let query = { bookingStatus: true }
-    // if (searchData) {
-    //   query = {
-       
-    //     $or: [
-    //       { bookingStatus: true},
-    //       { name: { $regex: searchData, $options: "i" } },
-    //       { place: { $regex: searchData, $options: "i" } },
-    //       { eventDate: { $regex: searchData, $options: "i" } },
-    //       { email: { $regex: searchData, $options: "i" } }
-    //     ]
-    //   };
-
-    // }
-    // query.isCancelled={ $exists: false };
-    // query.advanceAmount = { $exists: false };
-    const query = {
-      bookingStatus: true,
-      $or: [
-        { name: { $regex: searchData, $options: "i" } },
-    { place: { $regex: searchData, $options: "i" } },
-    // { eventDate: { $regex: searchData, $options: "i" } },
-    { email: { $regex: searchData, $options: "i" } },
-    // { isCancelled: { $exists: false } },
-    { advanceAmount: { $exists: false } }
-        
-      ],
-    };
-    query.isCancelled= { $exists: false }
-
+    query.advanceAmount = { $exists: false };
     const BookingData = await Booking.find(query).populate('studio').populate('categories.categoryId')
+
     const BookingDatas = BookingData.filter(booking => booking.studio.vendorId.toString() === req.id.toString());
-    console.log("bookingDatas : ",BookingDatas)
+    console.log("bookingDatas _______________________________________________: ",BookingDatas)
     if (BookingDatas.length < 1) {
       res.status(200).json({ success: true, message: "No datas found" })
 

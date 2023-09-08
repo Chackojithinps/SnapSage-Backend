@@ -7,55 +7,44 @@ const authToken = 'ef312426ae5c88c37480af563156bede';
 const client = require('twilio')(accountSID, authToken)
 const cloudinary = require('../Config/Cloudinary')
 
-let vendorDatas = null;
-let vendorImages =null;
+// let vendorDatas = null;
+// let vendorImages =null;
 //-------------------------------Send Otp Vendor side------------------------------->
 
-const requestOTP = async (req, res) => {
-  try {
-    console.log("vendor side")
-    console.log("req.body : ", req.body)
-    console.log("req.files : ",req.files)
-    const { phone } = req.body;
-    vendorDatas = req.body
-    vendorImages = req.files
-    console.log("Phone", phone)
-    client.verify.v2.services(serviceSID)
-      .verifications.create({
-        to: `+91${phone}`,
-        channel: "sms"
-      }).then((res1) => {
-        vendorDatas = req.body
-        console.log("res:", res1)
-        return res.status(200).json({ res1 })
-      })
-  } catch (error) {
-    console.log('requestOTP', error.message);
-    res.status(500).json({ message: 'Failed to send OTP' });
-  }
-};
+// const requestOTP = async (req, res) => {
+//   try {
+//     console.log("vendor side")
+//     console.log("req.body : ", req.body)
+//     console.log("req.files : ",req.files)
+//     const { phone } = req.body;
+//     vendorDatas = req.body
+//     vendorImages = req.files
+//     console.log("Phone", phone)
+//     client.verify.v2.services(serviceSID)
+//       .verifications.create({
+//         to: `+91${phone}`,
+//         channel: "sms"
+//       }).then((res1) => {
+//         vendorDatas = req.body
+//         console.log("res:", res1)
+//         return res.status(200).json({ res1 })
+//       })
+//   } catch (error) {
+//     console.log('requestOTP', error.message);
+//     res.status(500).json({ message: 'Failed to send OTP' });
+//   }
+// };
+
 
 // -------------------------------------Verify Otp Vendor Side -------------------------------
 
-const verifyOtp = async (req, res) => {
+const vendorSignup = async (req, res) => {
   try {
-    console.log("entered verifyOtp")
-    console.log(req.body)
-    const { otp } = req.body
-    console.log("second : ", otp)
-    const varificationResult = await client.verify.v2.services(serviceSID)
-      .verificationChecks.create({
-        to: "+918156909537",
-        code: otp.toString()
-      })
-    console.log("varificationResult : ", varificationResult)
-    if (varificationResult.status == "approved") {
-      const { fname, lname, phone, email, companyName, district, password,unionCode } = vendorDatas;
-      console.log("varification : ", vendorDatas)
-
+      console.log("req.body",req.body)
+      console.log("req.files",req.files)
+      const { fname, lname, phone, email, companyName, district, password,unionCode } = req.body;
       const img=[];
-      const vendorImg = vendorImages
-      console.log("vendorImg : ",vendorImg)
+      const vendorImg = req.files
       for(const file of vendorImg){
         const result = await cloudinary.uploader.upload(file.path,{folder:'SnapSage-Varification'});
         img.push(result.secure_url)
@@ -77,7 +66,7 @@ const verifyOtp = async (req, res) => {
       })
       await vendorData.save()
       res.status(200).json({ message: "Successfully registered" })
-    }
+    
   } catch (error) {
     console.log("err", error.message)
   }
@@ -155,4 +144,4 @@ const profileUpload = async(req,res)=>{
     console.log("profilpic",error.message)
   }
 }
-module.exports = { requestOTP, verifyOtp, postLogin , getProfile,profileUpload }
+module.exports = {vendorSignup, postLogin , getProfile,profileUpload }
