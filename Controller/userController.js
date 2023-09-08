@@ -71,7 +71,6 @@ const generateOTP = () => {
 const sendOTP = async (email, otp) => {
   console.log("entered sendotp ")
   console.log("email , otp ", otp)
-  // Create transporter object to send email
   const transporter = nodemailer.createTransport({
     host: "smpt.gmail.com",
     port: 587,
@@ -131,7 +130,6 @@ for(const [key,value] of otpMap.entries()){
     const password = req.body.userData.password
     const confirmpass = req.body.userData.confirmpass
     if (password == confirmpass) {
-
       console.log("email : ", email)
       console.log("otp : : : ", otp)
       const storedOTP = otpMap.get(email);

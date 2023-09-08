@@ -169,7 +169,7 @@ const Bookings = async (req, res) => {
 
 // ---------------------------------------------------sent Mail--------------------------------------------------------------
 
-const sendOTP = async (email,message) => {
+const sendOTP = async (email,message,subject) => {
   // Create transporter object to send email
   console.log("enetered sendOtp to mail")
   const transporter = nodemailer.createTransport({
@@ -186,7 +186,7 @@ const sendOTP = async (email,message) => {
   const mailOptions = {
     from: "jithinchackopayyanat@gmail.com",
     to: email,
-    subject: "OTP Verification",
+    subject:`${subject}`,
     html: `<h4 style='black'>${message}</h4>`,
   };
   try {
@@ -208,9 +208,10 @@ const acceptBooking = async (req, res) => {
     console.log("accept bookings")
     console.log("req.email : ",req.body.email)
     const email = req.body.email
+    const subject= "studio booking accepted"
     const message = 'Your Request Accepted by the Vendor. You can Now make payment to the vendor.'
     console.log("req.id ", req.query.id)
-    sendOTP(email,message);
+    sendOTP(email,message,subject);
     const updateBookings = await Booking.updateOne({ _id: req.query.id }, { $set: { bookingStatus: true } })
     res.status(200).json({ success: true, updateBookings })
 
