@@ -283,34 +283,44 @@ const unpaidBookings = async (req, res) => {
     console.log('req.id hello: ', req.id)
     const searchData = req.query.search
     console.log("serachdata : ", searchData)
-
-    let query = { bookingStatus: true }
-    if (searchData) {
-      query = {
+    
+    // let query = { bookingStatus: true }
+    // if (searchData) {
+    //   query = {
        
-        $or: [
-          { bookingStatus: true},
-          { name: { $regex: searchData, $options: "i" } },
-          { place: { $regex: searchData, $options: "i" } },
-          { eventDate: { $regex: searchData, $options: "i" } },
-          { email: { $regex: searchData, $options: "i" } }
-        ]
-      };
+    //     $or: [
+    //       { bookingStatus: true},
+    //       { name: { $regex: searchData, $options: "i" } },
+    //       { place: { $regex: searchData, $options: "i" } },
+    //       { eventDate: { $regex: searchData, $options: "i" } },
+    //       { email: { $regex: searchData, $options: "i" } }
+    //     ]
+    //   };
 
-    }
-    query.isCancelled={ $exists: false };
-    query.advanceAmount = { $exists: false };
+    // }
+    // query.isCancelled={ $exists: false };
+    // query.advanceAmount = { $exists: false };
+    const query = {
+      bookingStatus: true,
+      $or: [
+        { name: { $regex: searchData, $options: "i" } },
+    { place: { $regex: searchData, $options: "i" } },
+    // { eventDate: { $regex: searchData, $options: "i" } },
+    { email: { $regex: searchData, $options: "i" } },
+    // { isCancelled: { $exists: false } },
+    { advanceAmount: { $exists: false } }
+        
+      ],
+    };
+    query.isCancelled= { $exists: false }
 
     const BookingData = await Booking.find(query).populate('studio').populate('categories.categoryId')
     const BookingDatas = BookingData.filter(booking => booking.studio.vendorId.toString() === req.id.toString());
-    console.log("filteredBookingDatas : ", BookingDatas)
-    console.log(BookingDatas.length)
+    console.log("bookingDatas : ",BookingDatas)
     if (BookingDatas.length < 1) {
-      console.log("no vendorlists")
       res.status(200).json({ success: true, message: "No datas found" })
 
     } else {
-      console.log("eheeeee")
       return res.status(200).json({ success: true, BookingDatas })
     }
   } catch (error) {
@@ -322,8 +332,6 @@ const unpaidBookings = async (req, res) => {
 
 const finishWork = async (req, res) => {
   try {
-    console.log("finished work bookings")
-    console.log("req.id ", req.query.id)
     const updateBookings = await Booking.updateOne({ _id: req.query.id }, { $set: { workStatus: true } })
     res.status(200).json({ success: true, updateBookings })
 
@@ -337,10 +345,7 @@ const finishWork = async (req, res) => {
 
 const workHistory = async (req, res) => {
   try {
-    console.log("entered work hsitory")
-    console.log('req.id hello: ', req.id)
     const searchData = req.query.search
-    console.log("serachdata : ", searchData)
 
     let query = { workStatus:true }
     if (searchData) {
@@ -358,26 +363,30 @@ const workHistory = async (req, res) => {
 
     const BookingData = await Booking.find(query).populate('studio').populate('categories.categoryId')
     const BookingDatas = BookingData.filter(booking => booking.studio.vendorId.toString() === req.id.toString());
-    console.log("filteredBookingDatas : ", BookingDatas)
-    console.log(BookingDatas.length)
     if (BookingDatas.length < 1) {
-      console.log("no vendorlists")
       res.status(200).json({ success: true, message: "No datas found" })
 
     } else {
-      console.log("eheeeee")
       return res.status(200).json({ success: true, BookingDatas })
     }
   } catch (error) {
     console.log("bookings: ", error.message);
   }
 }
-// ------------------------------------------------------------Work rejct by vendor---------------------------------------------
+// ------------------------------------------------------------unpaid user rejct by vendor---------------------------------------------
+
 const rejectUnpaiduser=async(req,res)=>{
   try {
     console.log("Entered reject unpaid")
     console.log(req.query.id)
+    const email = req.body.email;
+    console.log('studio : ',req.body.studio)
+    const studio = req.body.studio
     const updatedData = await Booking.updateOne({_id:req.query.id},{$set:{isCancelled:true}})
+    const message = `your Booking for ${studio} is cancelled by Vendor because of pending payment`
+    const subject = 'Cancelled booking'
+    sendOTP(email,message,subject);
+
     return res.status(200).json({ success: true })
   } catch (error) {
     console.log("rejectunpaid: ", error.message);
