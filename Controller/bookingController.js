@@ -2,7 +2,6 @@ const Booking = require('../Models/bookingSchema');
 const Photos = require('../Models/photoSchema')
 const Studio = require('../Models/StudioModel')
 const Razorpay = require('razorpay');
-const mongoose = require('mongoose')
 const crypto = require('crypto')
 const nodemailer = require("nodemailer");
 
@@ -12,7 +11,7 @@ const nodemailer = require("nodemailer");
 const bookingHistory = async (req, res) => {
   try {
     console.log(" bookings History")
-    console.log("req.id ", req.id)  
+    console.log("req.id ", req.id)
 
     // const BookingList = await Booking.find({user:req.id,workStatus:true}).populate('studio').populate('categories.categoryId').exec();
     const BookingList = await Booking.find({
@@ -29,7 +28,7 @@ const bookingHistory = async (req, res) => {
     console.log("BookingList : ", BookingList)
     res.status(200).json({ success: true, BookingList })
   } catch (error) {
-    console.log("bookingList : ", error.message)
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
@@ -40,7 +39,7 @@ const bookingRequest = async (req, res) => {
     console.log("entered booking");
     console.log(req.id)
     const { message, email, phone, district, city, eventDate, totalAmount, categories, studioId } = req.body;
-    console.log("message : ",message)
+    console.log("message : ", message)
     console.log("req.body : ", req.body)
     const bookingData = new Booking({
       user: req.id,
@@ -56,12 +55,10 @@ const bookingRequest = async (req, res) => {
         categoryId, // Store each category ID in the categories array
       })),
     });
-
     await bookingData.save();
     res.status(201).json({ success: true, bookingData });
   } catch (error) {
-    console.log("booking request: ", error.message);
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
@@ -74,9 +71,9 @@ const bookingList = async (req, res) => {
 
     // const BookingList = await Booking.find({ user: req.id ,$or:[workStatus:false,isCancelled:false]}).populate('studio').populate('categories.categoryId').exec();
     const BookingList = await Booking.find({
-      user: req.id,workStatus:false,isCancelled:false
+      user: req.id, workStatus: false, isCancelled: false
     }).populate('studio').populate('categories.categoryId').exec();
-   
+
     await Studio.populate(BookingList, {
       path: 'studio.images',
       model: 'photos'
@@ -84,7 +81,7 @@ const bookingList = async (req, res) => {
     console.log("BookingList : ", BookingList)
     res.status(200).json({ success: true, BookingList })
   } catch (error) {
-    console.log("bookingList : ", error.message)
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
@@ -110,7 +107,8 @@ const payment = async (req, res) => {
     })
 
   } catch (error) {
-    console.log("payment", error.message)
+    res.status(500).json({ error: 'Internal server error' });
+
   }
 }
 
@@ -136,7 +134,8 @@ const VarifyPayment = async (req, res) => {
     }
 
   } catch (error) {
-    console.log("bookingList : ", error.message)
+    res.status(500).json({ error: 'Internal server error' });
+
   }
 }
 // ------------------------------------------ Get booking req in vendor Side ---------------------------------------------
@@ -173,14 +172,13 @@ const Bookings = async (req, res) => {
       return res.status(200).json({ success: true, BookingDatas })
     }
   } catch (error) {
-    console.log("bookings: ", error.message);
-
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
 // ---------------------------------------------------sent Mail--------------------------------------------------------------
 
-const sendOTP = async (email,message,subject) => {
+const sendOTP = async (email, message, subject) => {
   // Create transporter object to send email
   console.log("enetered sendOtp to mail")
   const transporter = nodemailer.createTransport({
@@ -190,14 +188,14 @@ const sendOTP = async (email,message,subject) => {
     requireTLS: true,
     service: "Gmail",
     auth: {
-      user:"jithinchackopayyanat@gmail.com",
-      pass:"pexpekvbwxmqujlh",
+      user: "jithinchackopayyanat@gmail.com",
+      pass: "pexpekvbwxmqujlh",
     },
   });
   const mailOptions = {
     from: "jithinchackopayyanat@gmail.com",
     to: email,
-    subject:`${subject}`,
+    subject: `${subject}`,
     html: `<h4 style='black'>${message}</h4>`,
   };
   try {
@@ -207,8 +205,8 @@ const sendOTP = async (email,message,subject) => {
     // Return success response
     console.log("OTP sent successfully");
   } catch (error) {
-    console.log(error);
-    throw new Error("Failed to send OTP");
+    res.status(500).json({ error: 'Internal server error' });
+
   }
 };
 
@@ -217,16 +215,17 @@ const sendOTP = async (email,message,subject) => {
 const acceptBooking = async (req, res) => {
   try {
     console.log("accept bookings")
-    console.log("req.email : ",req.body.email)
+    console.log("req.email : ", req.body.email)
     const email = req.body.email
-    const subject= "studio booking accepted"
+    const subject = "studio booking accepted"
     const message = 'Your Request Accepted by the Vendor. You can Now make payment to the vendor.'
     console.log("req.id ", req.query.id)
-    sendOTP(email,message,subject);
+    sendOTP(email, message, subject);
     const updateBookings = await Booking.updateOne({ _id: req.query.id }, { $set: { bookingStatus: true } })
     res.status(200).json({ success: true, updateBookings })
   } catch (error) {
-    console.log("accept bookings: ", error.message);
+    res.status(500).json({ error: 'Internal server error' });
+
   }
 }
 // ------------------------------------------------------------upcoming events ---------------------------------------------
@@ -243,10 +242,10 @@ const upcomingEvents = async (req, res) => {
       query = {
         bookingStatus: true,
         $or: [
-          { name: { $regex: searchData, $options: "i" }},
-          { place: { $regex: searchData, $options: "i" }},
-          { eventDate: { $regex: searchData, $options: "i" }},
-          { email: { $regex: searchData, $options: "i"}}
+          { name: { $regex: searchData, $options: "i" } },
+          { place: { $regex: searchData, $options: "i" } },
+          { eventDate: { $regex: searchData, $options: "i" } },
+          { email: { $regex: searchData, $options: "i" } }
         ]
       };
 
@@ -267,7 +266,8 @@ const upcomingEvents = async (req, res) => {
       return res.status(200).json({ success: true, BookingDatas })
     }
   } catch (error) {
-    console.log("bookings: ", error.message);
+    res.status(500).json({ error: 'Internal server error' });
+
   }
 }
 
@@ -279,24 +279,23 @@ const unpaidBookings = async (req, res) => {
     console.log('req.id hello: ', req.id)
     const searchData = req.query.search
     console.log("serachdata : ", searchData)
-    let query =  { bookingStatus: true, isCancelled: false }
+    let query = { bookingStatus: true, isCancelled: false }
     if (searchData) {
       query = {
-      
+
         $or: [
           { name: { $regex: searchData, $options: "i" } },
           { place: { $regex: searchData, $options: "i" } },
           { email: { $regex: searchData, $options: "i" } }
         ]
       };
-      
+
     }
-    
+
     query.advanceAmount = { $exists: false };
     const BookingData = await Booking.find(query).populate('studio').populate('categories.categoryId')
 
     const BookingDatas = BookingData.filter(booking => booking.studio.vendorId.toString() === req.id.toString());
-    console.log("bookingDatas _______________________________________________: ",BookingDatas)
     if (BookingDatas.length < 1) {
       res.status(200).json({ success: true, message: "No datas found" })
 
@@ -304,7 +303,8 @@ const unpaidBookings = async (req, res) => {
       return res.status(200).json({ success: true, BookingDatas })
     }
   } catch (error) {
-    console.log("bookings: ", error.message);
+    res.status(500).json({ error: 'Internal server error' });
+
   }
 }
 
@@ -316,7 +316,8 @@ const finishWork = async (req, res) => {
     res.status(200).json({ success: true, updateBookings })
 
   } catch (error) {
-    console.log("accept bookings: ", error.message);
+    res.status(500).json({ error: 'Internal server error' });
+
   }
 }
 
@@ -327,7 +328,7 @@ const workHistory = async (req, res) => {
   try {
     const searchData = req.query.search
 
-    let query = { workStatus:true }
+    let query = { workStatus: true }
     if (searchData) {
       query = {
         bookingStatus: true,
@@ -350,26 +351,28 @@ const workHistory = async (req, res) => {
       return res.status(200).json({ success: true, BookingDatas })
     }
   } catch (error) {
-    console.log("bookings: ", error.message);
+    res.status(500).json({ error: 'Internal server error' });
+
   }
 }
 // ------------------------------------------------------------unpaid user rejct by vendor---------------------------------------------
 
-const rejectUnpaiduser=async(req,res)=>{
+const rejectUnpaiduser = async (req, res) => {
   try {
     console.log("Entered reject unpaid")
     console.log(req.query.id)
     const email = req.body.email;
-    console.log('studio : ',req.body.studio)
+    console.log('studio : ', req.body.studio)
     const studio = req.body.studio
-    const updatedData = await Booking.updateOne({_id:req.query.id},{$set:{isCancelled:true}})
+    const updatedData = await Booking.updateOne({ _id: req.query.id }, { $set: { isCancelled: true } })
     const message = `your Booking for ${studio} is cancelled by Vendor because of pending payment`
     const subject = 'Cancelled booking'
-    sendOTP(email,message,subject);
+    sendOTP(email, message, subject);
 
     return res.status(200).json({ success: true })
   } catch (error) {
-    console.log("rejectunpaid: ", error.message);
+    res.status(500).json({ error: 'Internal server error' });
+
   }
 }
 

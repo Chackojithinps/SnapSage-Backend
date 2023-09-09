@@ -8,40 +8,33 @@ const bcrypt = require('bcryptjs')
 // ------------------------------------------------------- Admin Login -----------------------------------------------------
 
 const postLogin = async (req, res) => {
-    try {
-      console.log('entered admin login');
-      const { email, password } = req.body;
-      const adminDetails = await Admin.findOne({ email });
-  
-      if (!adminDetails) {
-        return res.status(404).json({ message: "User doesn't exist" });
-      }
-  
-      const isPasswordMatch = await bcrypt.compare(password, adminDetails.password);
-  
-      if (!isPasswordMatch) {
-        return res.status(401).json({ message: 'Incorrect password' });
-      }
-  
-      const AdminToken = jwt.sign({ id: adminDetails._id }, process.env.JWT_ADMIN_SECRET_KEY, { expiresIn: '1d' });
-      // console.log(token);
-      res.status(200).json({ message: 'Login successful', AdminToken });
-    } catch (error) {
-      console.log('AdminLogin', error.message);
-      res.status(500).json({ message: 'Something went wrong' });
+  try {
+    const { email, password } = req.body;
+    const adminDetails = await Admin.findOne({ email });
+    if (!adminDetails) {
+      return res.status(404).json({ message: "User doesn't exist" });
     }
-  };
+    const isPasswordMatch = await bcrypt.compare(password, adminDetails.password);
+    if (!isPasswordMatch) {
+      return res.status(402).json({ message: 'Incorrect password' });
+    }
+    const AdminToken = jwt.sign({ id: adminDetails._id }, process.env.JWT_ADMIN_SECRET_KEY, { expiresIn: '1d' });
+    res.status(200).json({ message: 'Login successful', AdminToken });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
 
 // --------------------------------------------------------Admin register -----------------------------------------------
 
-  
+
 // const postRegister = async(req,res)=>{
 //     try {
 //         console.log("entered post register")
 //         console.log(req.body)
 //         const {email,password} =req.body;
 //         const hashPassword =await bcrypt.hash(password.toString(),10);
-       
+
 //             const adminData = new Admin({
 //                 email,
 //                 password:hashPassword
@@ -54,230 +47,201 @@ const postLogin = async (req, res) => {
 
 // --------------------------------------------------------Get User lists -----------------------------------------------
 
-const getUserLists = async(req,res)=>{
+const getUserLists = async (req, res) => {
   try {
-    console.log("getting userlists")
     const searchData = req.query.search;
-    let query={}
-    if(searchData){
-      query={
+    let query = {}
+    if (searchData) {
+      query = {
         $or: [
-          { fname: { $regex: searchData, $options: "i" } }, 
-          { lname: { $regex: searchData, $options: "i" } }, 
-          { email: { $regex: searchData, $options: "i" } }, 
-          { companyName: { $regex: searchData, $options: "i" }}
+          { fname: { $regex: searchData, $options: "i" } },
+          { lname: { $regex: searchData, $options: "i" } },
+          { email: { $regex: searchData, $options: "i" } },
+          { companyName: { $regex: searchData, $options: "i" } }
         ]
       }
     }
     const UserLists = await User.find(query)
-    if(UserLists.length<1){
+    if (UserLists.length < 1) {
       console.log("no userlists")
-       res.status(200).json({success:true,message:"No datas found"})
-
-    }else{
-
+      res.status(200).json({ success: true, message: "No datas found" })
+    } else {
       console.log("eheeeee")
-     res.status(200).json({success:true,UserLists})
-
+      res.status(200).json({ success: true, UserLists })
     }
   } catch (error) {
-    console.log("getUserLists : ",error.message)
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
 // ------------------------------------------------------- Get Vendor Lists -----------------------------------------------
 
 
-const getVendorLists = async(req,res)=>{
+const getVendorLists = async (req, res) => {
   try {
     console.log("getting vendorlists")
-    
     const searchData = req.query.search
-    console.log("serachdata : ",searchData)
-    
-    let query={varified:true}
-    if(searchData){
-       query = {
+    console.log("serachdata : ", searchData)
+    let query = { varified: true }
+    if (searchData) {
+      query = {
         varified: true,
         $or: [
-          { fname: { $regex: searchData, $options: "i" } }, 
-          { lname: { $regex: searchData, $options: "i" } }, 
-          { email: { $regex: searchData, $options: "i" } }, 
-          { companyName: { $regex: searchData, $options: "i" }}
+          { fname: { $regex: searchData, $options: "i" } },
+          { lname: { $regex: searchData, $options: "i" } },
+          { email: { $regex: searchData, $options: "i" } },
+          { companyName: { $regex: searchData, $options: "i" } }
         ]
       };
     }
     const Vendorlists = await Vendor.find(query)
-    // console.log("vendorlists : ",Vendorlists)
     console.log(Vendorlists.length)
-    if(Vendorlists.length<1){
+    if (Vendorlists.length < 1) {
       console.log("no vendorlists")
-       res.status(200).json({success:true,message:"No datas found"})
+      res.status(200).json({ success: true, message: "No datas found" })
 
-    }else{
-
+    } else {
       console.log("eheeeee")
-      return res.status(200).json({success:true,Vendorlists})
+      return res.status(200).json({ success: true, Vendorlists })
     }
   } catch (error) {
-    console.log("getvendorLists : ",error.message)
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
 // -------------------------------------------------------------Block User --------------------------------------------------
 
-const blockUser = async(req,res)=>{
+const blockUser = async (req, res) => {
   try {
     const userId = req.query.id
-    const blockUser = await User.findOneAndUpdate({_id:userId},{$set:{status:true}})
-    res.send({success:true})
+    const blockUser = await User.findOneAndUpdate({ _id: userId }, { $set: { status: true } })
+    res.send({ success: true })
   } catch (error) {
-    console.log("block error user : ",error.message)
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
 // --------------------------------------------------------Unblock User -----------------------------------------------
 
 
-const unblockUser = async(req,res)=>{
+const unblockUser = async (req, res) => {
   try {
     const userId = req.query.id
-    console.log("userId",userId)
-    const blockUser = await User.findOneAndUpdate({_id:userId},{$set:{status:false}})
-    res.send({success:true})
+    console.log("userId", userId)
+    const blockUser = await User.findOneAndUpdate({ _id: userId }, { $set: { status: false } })
+    res.send({ success: true })
   } catch (error) {
-    console.log("block error user : ",error.message)
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
 // --------------------------------------------- Get Unvarified vendor req -----------------------------------------------
 
-const getUnvarified = async(req,res)=>{
+const getUnvarified = async (req, res) => {
   try {
-    console.log("getting unverified vendorlists")
-    
     const searchData = req.query.search
-    console.log("serachdata : ",searchData)
-    
-    let query={varified:false}
-    if(searchData){
-       query = {
+    let query = { varified: false }
+    if (searchData) {
+      query = {
         varified: false,
         $or: [
-          { fname: { $regex: searchData, $options: "i" }}, 
-          { lname: { $regex: searchData, $options: "i" }}, 
-          { email: { $regex: searchData, $options: "i" }}, 
-          { companyName: { $regex: searchData, $options: "i" }}
+          { fname: { $regex: searchData, $options: "i" } },
+          { lname: { $regex: searchData, $options: "i" } },
+          { email: { $regex: searchData, $options: "i" } },
+          { companyName: { $regex: searchData, $options: "i" } }
         ]
       };
     }
     const Vendorlists = await Vendor.find(query)
-    // console.log("vendorlists : ",Vendorlists)
     console.log(Vendorlists.length)
-    if(Vendorlists.length<1){
+    if (Vendorlists.length < 1) {
       console.log("no vendorlists")
-       res.status(200).json({success:true,message:"No datas found"})
-
-    }else{
-
+      res.status(200).json({ success: true, message: "No datas found" })
+    } else {
       console.log("eheeeee")
-      return res.status(200).json({success:true,Vendorlists})
+      return res.status(200).json({ success: true, Vendorlists })
     }
   } catch (error) {
-    console.log("getvendorLists : ",error.message)
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
 // ---------------------------------------------------- Varify Vendor requests --------------------------------------------
 
-const verifyVendor = async (req,res) =>{
-   try {
-      console.log("entered varify user ")
-      console.log(req.query.id)
-      const unVarifiedUser = await Vendor.updateOne({_id:req.query.id},{$set:{varified:true}})
-      console.log("unVarifiedUser : ",unVarifiedUser)
-      res.status(200).json({success: true})
-
-
-   } catch (error) {
-      console.log("varify vendor : ",error.message)
-   }
+const verifyVendor = async (req, res) => {
+  try {
+    const unVarifiedUser = await Vendor.updateOne({ _id: req.query.id }, { $set: { varified: true } })
+    res.status(200).json({ success: true })
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
 }
 
 // ----------------------------------------------------- Reject Vendor requests ---------------------------------------------
 
-const rejectVendor = async (req,res) =>{
+const rejectVendor = async (req, res) => {
   try {
-     console.log("entered reject user ")
-     console.log(req.query.id)
-     const deleteVendor = await Vendor.deleteOne({_id:req.query.id})
-     console.log("unVarifiedUser : ",deleteVendor)
-     res.status(200).json({success: true})
-
-
+    const deleteVendor = await Vendor.deleteOne({ _id: req.query.id })
+    res.status(200).json({ success: true })
   } catch (error) {
-     console.log("varify vendor : ",error.message)
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
 // ----------------------------------------------------- get Unvarified Studios ---------------------------------------------
 
-const getUnvarifiedStudios = async(req,res)=>{
+const getUnvarifiedStudios = async (req, res) => {
   try {
-    console.log("getting unverified Studios")  
     const searchData = req.query.search
-    console.log("serachdata : ",searchData)
-    
-    let query={varified:false}
-    if(searchData){
-       query = {
+    let query = { varified: false }
+    if (searchData) {
+      query = {
         varified: false,
         $or: [
-          { companyName: { $regex: searchData, $options: "i" }}, 
-          { place: { $regex: searchData, $options: "i" }}, 
-          { city: { $regex: searchData, $options: "i" }}, 
-          { email: { $regex: searchData, $options: "i" }}
+          { companyName: { $regex: searchData, $options: "i" } },
+          { place: { $regex: searchData, $options: "i" } },
+          { city: { $regex: searchData, $options: "i" } },
+          { email: { $regex: searchData, $options: "i" } }
         ]
       };
     }
     const studioDatas = await Studio.find(query)
     console.log(studioDatas.length)
-    if(studioDatas.length<1){
+    if (studioDatas.length < 1) {
       console.log("no vendorlists")
-       res.status(200).json({success:true,message:"No datas found"})
-
-    }else{
-      console.log("eheeeee")
-      return res.status(200).json({success:true,studioDatas})
+      res.status(200).json({ success: true, message: "No datas found" })
+    } else {
+      return res.status(200).json({ success: true, studioDatas })
     }
   } catch (error) {
-    console.log("studioDatas : ",error.message)
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
 // ----------------------------------------------------- Varify Studio ---------------------------------------------
-const varifyStudio = async (req,res) =>{
+const varifyStudio = async (req, res) => {
   try {
-     console.log("entered varify Studio ")
-     console.log(req.query.id)
-     const unVarifiedUser = await Studio.updateOne({_id:req.query.id},{$set:{varified:true}})
-     console.log("unVarifiedUser : ",unVarifiedUser)
-     res.status(200).json({success: true})
+    console.log("entered varify Studio ")
+    console.log(req.query.id)
+    const unVarifiedUser = await Studio.updateOne({ _id: req.query.id }, { $set: { varified: true } })
+    console.log("unVarifiedUser : ", unVarifiedUser)
+    res.status(200).json({ success: true })
 
 
   } catch (error) {
-     console.log("varify vendor : ",error.message)
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
-  module.exports ={postLogin,
-    getUserLists,
-    getVendorLists,
-    blockUser,
-    unblockUser,
-    getUnvarified,
-    verifyVendor,
-    rejectVendor,
-    getUnvarifiedStudios,
-    varifyStudio
-  }
+module.exports = {
+  postLogin,
+  getUserLists,
+  getVendorLists,
+  blockUser,
+  unblockUser,
+  getUnvarified,
+  verifyVendor,
+  rejectVendor,
+  getUnvarifiedStudios,
+  varifyStudio
+}
