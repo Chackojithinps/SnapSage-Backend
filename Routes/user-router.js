@@ -3,6 +3,7 @@ const multer = require('multer')
 const routes = express.Router()
 const userController = require('../Controller/userController')
 const bookingController = require('../Controller/bookingController')
+const offerController= require('../Controller/offerController')
 const userAuth = require('../Middlewares/userAuth')
 const path = require('path')
 
@@ -43,5 +44,9 @@ routes.get('/bookings',userAuth.userAuth,bookingController.bookingList)
 routes.post('/payment',userAuth.userAuth,bookingController.payment)
 routes.post('/verifyPayment',userAuth.userAuth,bookingController.VarifyPayment)
 routes.get('/bookingHistory',userAuth.userAuth,bookingController.bookingHistory)
+
+//------------------------------------ Offers ------------------------------
+routes.get('/getOffers',offerController.getOffers)
+
 
 module.exports = routes

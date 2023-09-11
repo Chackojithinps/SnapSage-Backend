@@ -1,5 +1,20 @@
 const Offer = require('../Models/offerModel')
 
+// ------------------------------------------------------------get Offers by User ---------------------------------------------------------
+
+const getOffers = async (req,res)=>{
+    try {
+        console.log("entered getOffer")
+        console.log("rq.oid : ",req.query.id)
+        const offerDatas = await Offer.find({vendor:req.query.id})
+        console.log("offerDatas; : ",offerDatas)
+        res.status(200).json({success:true,offerDatas})
+    } catch (error) {
+        console.log("error in offeradd : ",error.message)
+    }
+}
+
+// ------------------------------------------------------------Add Offer by vendor --------------------------------------------------------
 const addOffer = async (req,res)=>{
     try {
         console.log("entered addoffer")
@@ -20,5 +35,6 @@ const addOffer = async (req,res)=>{
 }
 
 module.exports = {
-    addOffer
+    addOffer,
+    getOffers
 }

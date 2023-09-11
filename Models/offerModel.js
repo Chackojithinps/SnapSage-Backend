@@ -20,6 +20,14 @@ const offerSchmea = new mongoose.Schema({
     description:{
         type:String,
         required:true
+    },
+    isListed:{
+        type:Boolean,
+        default:false
+    },
+    oneTime:{
+        type:Boolean,
+        default:false
     }
 })
 
