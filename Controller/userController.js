@@ -171,6 +171,25 @@ const getProfile = async (req, res) => {
     console.log("getProfile", error.message)
   }
 }
+
+// -------------------------------------------------edit user profile -------------------------------------------
+
+const editUserProfile = async (req, res) => {
+  try {
+    console.log("edit profile")
+    console.log(req.id)
+    console.log("userEdited data ",req.body)
+    const editedDetails = req.body.editedUserData
+    const userDetail = await User.updateOne({ _id: req.id },{$set:{fname:editedDetails.fname,lname:editedDetails.lname,email:editedDetails.email,phone:editedDetails.phone}})
+  //   if (!userDetail) {
+  //     return res.status(401).json({ message: "Not protected", success: false })
+  //   }
+    return res.status(200).json({ success: true })
+  } catch (error) {
+    console.log("getProfile", error.message)
+  }
+}
+
 // ------------------------------------------------- profile pic upload -------------------------------------------
 
 const profileUpload = async (req, res) => {
@@ -186,6 +205,7 @@ const profileUpload = async (req, res) => {
   }
 }
 // --------------------------------------------------- Get Studios -------------------------------------------
+
 const getProfileData = async (req, res) => {
   try {
     console.log("getProfiledata")
@@ -228,5 +248,6 @@ module.exports = {
   getProfile,
   profileUpload,
   getStudios,
-  getProfileData
+  getProfileData,
+  editUserProfile
 };

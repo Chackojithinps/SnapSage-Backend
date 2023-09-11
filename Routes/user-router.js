@@ -27,9 +27,11 @@ routes.post('/login',userController.postLogin)
 routes.post('/verifyOtp',userController.verifyOtp)
 
 // -----------------------------------User Profile---------------------------
+
 routes.get('/profile',userAuth.userAuth,userController.getProfile)
 routes.post('/upload',userAuth.userAuth,upload.single('file'),userController.profileUpload)
 routes.get('/getProfileData',userAuth.userAuth,userController.getProfileData)
+routes.patch('/editUserProfile',userAuth.userAuth,userController.editUserProfile)
 
 // -----------------------------------Studios---------------------------
 routes.get('/getStudios',userController.getStudios)

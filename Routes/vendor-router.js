@@ -7,6 +7,7 @@ const vendorController = require('../Controller/vendorController')
 const studioController = require('../Controller/studioController')
 const imageController = require('../Controller/imageController')
 const bookingController = require('../Controller/bookingController')
+const offerController = require('../Controller/offerController')
 
 const path = require('path')
 
@@ -47,5 +48,9 @@ routes.get('/unpaidBookings',vendorAuth.partnerAuth,bookingController.unpaidBook
 routes.patch('/finishWork',vendorAuth.partnerAuth,bookingController.finishWork)
 routes.get('/workHistory',vendorAuth.partnerAuth,bookingController.workHistory)
 routes.post('/rejectUnpaiduser',vendorAuth.partnerAuth,bookingController.rejectUnpaiduser)
+
+// ----------------------------------- Offers ---------------------------
+routes.post('/addOffer',vendorAuth.partnerAuth,offerController.addOffer)
+
 
 module.exports= routes
