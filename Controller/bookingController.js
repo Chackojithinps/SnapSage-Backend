@@ -1,6 +1,7 @@
 const Booking = require('../Models/bookingSchema');
 const Photos = require('../Models/photoSchema')
 const Studio = require('../Models/StudioModel')
+const Offer = require('../Models/offerModel')
 const Razorpay = require('razorpay');
 const crypto = require('crypto')
 const nodemailer = require("nodemailer");
@@ -36,11 +37,14 @@ const bookingHistory = async (req, res) => {
 
 const bookingRequest = async (req, res) => {
   try {
-    console.log("entered booking");
     console.log(req.id)
     const { message, email, phone, district, city, eventDate, totalAmount, categories, studioId } = req.body;
-    console.log("message : ", message)
-    console.log("req.body : ", req.body)
+   
+    const offers = req.body.offers
+    const offerIds = offers.map((offer) => offer._id);
+    
+    console.log("offerId : ",offerIds)
+
     const bookingData = new Booking({
       user: req.id,
       studio: studioId,
@@ -56,6 +60,8 @@ const bookingRequest = async (req, res) => {
       })),
     });
     await bookingData.save();
+    console.log("bookingDAtas : : : ",bookingData)
+    const offerData = await Offer.updateMany({ _id: { $in: offerIds } },{ $push: { user: req.id } })
     res.status(201).json({ success: true, bookingData });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });

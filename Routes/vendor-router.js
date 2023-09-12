@@ -51,6 +51,8 @@ routes.post('/rejectUnpaiduser',vendorAuth.partnerAuth,bookingController.rejectU
 
 // ----------------------------------- Offers ---------------------------
 routes.post('/addOffer',vendorAuth.partnerAuth,offerController.addOffer)
-
+routes.get('/getOffers',vendorAuth.partnerAuth,offerController.getOfferstoVendor)
+routes.patch('/listOffer',vendorAuth.partnerAuth,offerController.listOffer)
+routes.patch('/unlistOffer',vendorAuth.partnerAuth,offerController.unlistOffer)
 
 module.exports= routes

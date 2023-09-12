@@ -31,6 +31,23 @@ const studioSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'photos'
     },
+
+    review:[{
+        rating:{
+            type:Number
+        },
+        feedback:{
+            type:String
+        },
+        user:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'users'
+        },
+        created:{
+            type:Date,
+            default:Date.now()
+        }
+    }],
     description:{
         type:String,
         require:true
