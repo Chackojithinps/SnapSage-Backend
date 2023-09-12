@@ -232,7 +232,7 @@ const getStudios = async (req, res) => {
           path: 'images.categoryId', // Populate categoryId within the images array
           model: 'category', // Replace 'category' with the correct model name
         },
-      }).populate('category.categories')
+      }).populate('category.categories').populate('review.user')
     console.log("studioDetails : ", studioDetails)
     res.status(200).json({ success: true, studioDetails })
   } catch (error) {

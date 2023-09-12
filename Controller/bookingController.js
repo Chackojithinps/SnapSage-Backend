@@ -1,10 +1,13 @@
 const Booking = require('../Models/bookingSchema');
 const Photos = require('../Models/photoSchema')
 const Studio = require('../Models/StudioModel')
+const Review = require('../Models/reviewModel')
 const Offer = require('../Models/offerModel')
 const Razorpay = require('razorpay');
+const mongoose = require('mongoose')
 const crypto = require('crypto')
 const nodemailer = require("nodemailer");
+const { Rating } = require('@mui/material');
 
 
 // ------------------------------------------booking History ---------------------------------------------
@@ -30,6 +33,47 @@ const bookingHistory = async (req, res) => {
     res.status(200).json({ success: true, BookingList })
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
+  }
+}
+// ------------------------------------------ isUserBookde ---------------------------------------------
+
+const isUserBooked = async(req,res)=>{
+  try {
+    console.log("entered is user exists")
+    console.log("studioId : ",req.query.id)
+    const isUser = await Booking.find({user:req.id,workStatus:true})
+    console.log("isUser : ",isUser)
+    // const isUserBooked = isUser.filter((booking)=>{
+    //   console.log("isUserStudio Id  : ",booking.studio)
+
+    //   return booking.studio.equals(queryId);
+    // })
+    res.status(200).json({success:true,isUser})
+    
+  } catch (error) {
+    console.log("roror : ",error.message)
+  }
+}
+
+// ------------------------------------------ addReview ---------------------------------------------
+
+const addReview = async(req,res)=>{
+  try {
+    console.log("entered review")
+    console.log("req.body : ",req.body)
+    const newReview = {
+      rating: req.body.rating,
+      feedback: req.body.feedback,
+      user: req.id,
+    };
+    console.log("newReview : ",newReview)
+    const result = await Studio.updateOne(
+      { _id: req.body.studioId },
+      { $push: { review: newReview }}
+    );
+    res.status(200).json({success:true})
+  } catch (error) {
+    console.log("roror : ",error.message)
   }
 }
 
@@ -394,5 +438,7 @@ module.exports = {
   finishWork,
   workHistory,
   bookingHistory,
-  rejectUnpaiduser
+  rejectUnpaiduser,
+  isUserBooked,
+  addReview
 }

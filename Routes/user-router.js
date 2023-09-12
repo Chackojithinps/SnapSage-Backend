@@ -48,5 +48,10 @@ routes.get('/bookingHistory',userAuth.userAuth,bookingController.bookingHistory)
 //------------------------------------ Offers ------------------------------
 routes.get('/getOffers',offerController.getOffers)
 
+//------------------------------------ reviews ------------------------------
+routes.get('/isUserBooked',userAuth.userAuth,bookingController.isUserBooked)
+routes.post('/addReview',userAuth.userAuth,bookingController.addReview)
+
+
 
 module.exports = routes
