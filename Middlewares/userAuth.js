@@ -4,17 +4,18 @@ const jwt = require('jsonwebtoken')
 const userAuth = (req,res,next)=>{
     try {
         console.log("UserAuth entered")
-        console.log("Hello >>>>>",req.headers)
         
         const token = req.headers[`authorization`]
         console.log("token in userAuth : ",token)
         const tokenwithoutBearer = token.split(" ")[1]
         console.log("kkkkkkkkkkkkkk", tokenwithoutBearer)
         jwt.verify(tokenwithoutBearer,process.env.JWT_USER_SECRET_KEY,(err,encoded)=>{
+            console.log("encoded : ",encoded)
             if(err){
                 console.log("auth Failed",err.message)
                 return res.status(401).send({message:"Auth Failed",success:false})
-            }else{
+            }else if(encoded.role == "user"){
+                console.log("entered encoded code")
                 req.id = encoded.id
                 next()
             }

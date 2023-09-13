@@ -391,12 +391,10 @@ const workHistory = async (req, res) => {
       };
 
     }
-
     const BookingData = await Booking.find(query).populate('studio').populate('categories.categoryId')
     const BookingDatas = BookingData.filter(booking => booking.studio.vendorId.toString() === req.id.toString());
     if (BookingDatas.length < 1) {
       res.status(200).json({ success: true, message: "No datas found" })
-
     } else {
       return res.status(200).json({ success: true, BookingDatas })
     }

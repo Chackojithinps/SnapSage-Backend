@@ -94,7 +94,7 @@ const postLogin = async (req, res) => {
       return res.status(401).json({ message: 'Incorrect password' });
     }
 
-    const token = jwt.sign({ id: VendorDetails._id }, process.env.JWT_VENDOR_SECRET_KEY, { expiresIn: '1d' });
+    const token = jwt.sign({ id: VendorDetails._id,role:"vendor"}, process.env.JWT_VENDOR_SECRET_KEY, { expiresIn: '1d' });
     const vendorDetail = {
       userName: `${VendorDetails.fname} ${VendorDetails.lname}`,
       token

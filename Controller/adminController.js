@@ -18,7 +18,7 @@ const postLogin = async (req, res) => {
     if (!isPasswordMatch) {
       return res.status(402).json({ message: 'Incorrect password' });
     }
-    const AdminToken = jwt.sign({ id: adminDetails._id }, process.env.JWT_ADMIN_SECRET_KEY, { expiresIn: '1d' });
+    const AdminToken = jwt.sign({ id: adminDetails._id ,role:"admin"}, process.env.JWT_ADMIN_SECRET_KEY, { expiresIn: '1d' });
     res.status(200).json({ message: 'Login successful', AdminToken });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
