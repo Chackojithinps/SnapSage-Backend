@@ -12,7 +12,7 @@ const postLogin = async (req, res) => {
     const { email, password } = req.body;
     const adminDetails = await Admin.findOne({ email });
     if (!adminDetails) {
-      return res.status(404).json({ message: "User doesn't exist" });
+      return res.status(401).json({ message: "User doesn't exist" });
     }
     const isPasswordMatch = await bcrypt.compare(password, adminDetails.password);
     if (!isPasswordMatch) {

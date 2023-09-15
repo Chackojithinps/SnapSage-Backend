@@ -18,7 +18,7 @@ routes.get('/getUnverified',adminAuth.adminAuth,adminController.getUnvarified)
 routes.patch('/verifyVendor',adminAuth.adminAuth,adminController.verifyVendor)
 routes.post('/rejectVendor',adminAuth.adminAuth,adminController.rejectVendor)
 
-// -------------------------Category Management---------------------
+// -------------------------Category Management-------------------------
 routes.get('/categories',adminAuth.adminAuth,categoryController.getCategories)
 routes.post('/addCategory',adminAuth.adminAuth,categoryController.addCategory)
 routes.patch('/editCategory',adminAuth.adminAuth,categoryController.editCategory)
