@@ -4,6 +4,7 @@ const routes = express.Router()
 const userController = require('../Controller/userController')
 const bookingController = require('../Controller/bookingController')
 const offerController= require('../Controller/offerController')
+const chatController = require('../Controller/chatController')
 const userAuth = require('../Middlewares/userAuth')
 const path = require('path')
 
@@ -52,6 +53,9 @@ routes.get('/getOffers',offerController.getOffers)
 routes.get('/isUserBooked',userAuth.userAuth,bookingController.isUserBooked)
 routes.post('/addReview',userAuth.userAuth,bookingController.addReview)
 
+//------------------------------------ chat ------------------------------
 
+routes.post('/addChat',userAuth.userAuth,chatController.addChat)
+routes.get('/getChats',userAuth.userAuth,chatController.getChats)
 
 module.exports = routes
