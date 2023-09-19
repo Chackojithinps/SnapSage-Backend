@@ -2,6 +2,7 @@ const express = require('express')
 const routes = express.Router()
 const adminController = require('../Controller/adminController')
 const categoryController = require('../Controller/categoryController')
+const chatController = require('../Controller/chatController')
 const adminAuth = require('../Middlewares/adminAuth')
 
 // -----------------------------Admin Login-------------------------
@@ -27,6 +28,8 @@ routes.patch('/editCategory',adminAuth.adminAuth,categoryController.editCategory
 routes.get('/getUnvarifiedStudios',adminAuth.adminAuth,adminController.getUnvarifiedStudios)
 routes.patch('/verifyStudio',adminAuth.adminAuth,adminController.varifyStudio)
 
+// -------------------------Chat Management---------------------
+routes.get('/chatLists',adminAuth.adminAuth,chatController.chatLists)
 
 
 module.exports= routes

@@ -1,38 +1,82 @@
 const Chat = require('../Models/chatModel')
-const addChat = async(req,res)=>{
+
+
+// --------------------------------------Add chat ------------------------------
+
+const addChat = async (req, res) => {
     try {
         console.log("enetered ad chat")
-        console.log("message : ",req.body)
+        console.log("message : ", req.body)
         const time = new Date(Date.now()).getHours() +
-        ":" +
-        new Date(Date.now()).getMinutes()
-        const chatData= new Chat({
-            user:req.id,
-            sender:req.body.sender,
-            message:req.body.message,
-            time:time
+            ":" +
+            new Date(Date.now()).getMinutes()
+        const chatData = new Chat({
+            user: req.id,
+            sender: req.body.sender,
+            message: req.body.message,
+            time: time
         })
         await chatData.save()
-        res.status(200).json({messsage:"successfully added chat",chatData})
+        res.status(200).json({ messsage: "successfully added chat", chatData })
     } catch (error) {
-        console.log('error',error.messsage)
+        console.log('error', error.messsage)
     }
 }
 
+// --------------------------------------get specific user chat------------------------------
 
-const getChats = async(req,res)=>{
+
+const getChats = async (req, res) => {
     try {
         console.log("enetered get chat")
-        const messageData = await Chat.find({user:req.id}).sort({ createAt: 1 })
-        console.log("messageData : ",messageData)
-        res.status(200).json({message:"successfully added chat",messageData})
+        const messageData = await Chat.find({ user: req.id }).sort({ createAt: 1 })
+        console.log("messageData : ", messageData)
+        res.status(200).json({ message: "successfully added chat", messageData })
     } catch (error) {
-        console.log('error',error.message)
+        console.log('error', error.message)
     }
 }
 
+// --------------------------------------get all users in chat ------------------------------
 
-module.exports={
+const chatLists = async (req, res) => {
+    try {
+        console.log("enetered get chat Users")
+        const chatLists = await Chat.aggregate([
+            // {
+            //     $sort: {
+            //         createdAt: -1
+            //     }
+            // },
+            {
+                $group: {
+                    _id: '$user',
+                    latestChat: {
+                        $last: '$$ROOT'
+                    },
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users', // The name of the User collection
+                    localField: '_id', // Field from the 'latestChat' subdocument
+                    foreignField: '_id', // Field from the User collection
+                    as: 'userDetails',
+                },
+            },
+            {
+                $unwind: '$userDetails', // Unwind the userDetails array (since $lookup returns an array)
+            },
+        ])
+        chatLists.sort((a, b) => new Date(b.latestChat.createAt) - new Date(a.latestChat.createAt));
+        res.status(200).json({message: "Chat list got", chatLists })
+    } catch (error) {
+        console.log('error', error.message)
+    }
+}
+
+module.exports = {
     addChat,
-    getChats
+    getChats,
+    chatLists
 }
