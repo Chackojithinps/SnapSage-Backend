@@ -7,7 +7,7 @@ const addChat = async (req, res) => {
     try {
         console.log("enetered ad chat")
         console.log("message : ", req.body)
-        const time = new Date(Date.now()).getHours() +
+        const time = new Date(Date.now()).getHours() + 
             ":" +
             new Date(Date.now()).getMinutes()
         const chatData = new Chat({
@@ -37,7 +37,7 @@ const getChats = async (req, res) => {
     }
 }
 
-// --------------------------------------get all users in chat ------------------------------
+// --------------------------------------get all users in chat in admin side------------------------------
 
 const chatLists = async (req, res) => {
     try {
@@ -75,8 +75,47 @@ const chatLists = async (req, res) => {
     }
 }
 
+
+// --------------------------------------get specific user chat in admin side------------------------------
+
+
+const userChats = async (req, res) => {
+    try {
+        console.log("enetered get chat")
+        const userId=req.query.id
+        const userChats = await Chat.find({user:userId})
+        res.status(200).json({ message: "successfully get user  chat" ,userChats})
+    } catch (error) {
+        console.log('error', error.message)
+    }
+}
+
+// --------------------------------------Add chat admin side------------------------------
+
+const addChatAdmin = async (req, res) => {
+    try {
+        console.log("enetered add chat admin")
+        console.log("message : ", req.body)
+        const time = new Date(Date.now()).getHours() +
+            ":" +
+            new Date(Date.now()).getMinutes()
+        const chatData = new Chat({
+            user: req.body.id,
+            sender: req.body.sender,
+            message: req.body.message,
+            time: time
+        })
+        await chatData.save()
+        res.status(200).json({ messsage: "successfully added chat in admin side", chatData })
+    } catch (error) {
+        console.log('error', error.messsage)
+    }
+}
 module.exports = {
     addChat,
     getChats,
-    chatLists
+    chatLists,
+    userChats,
+    addChatAdmin
+
 }

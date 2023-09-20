@@ -30,6 +30,8 @@ routes.patch('/verifyStudio',adminAuth.adminAuth,adminController.varifyStudio)
 
 // -------------------------Chat Management---------------------
 routes.get('/chatLists',adminAuth.adminAuth,chatController.chatLists)
+routes.get('/userChats',adminAuth.adminAuth,chatController.userChats)
+routes.post('/addChat',adminAuth.adminAuth,chatController.addChatAdmin)
 
 
 module.exports= routes
