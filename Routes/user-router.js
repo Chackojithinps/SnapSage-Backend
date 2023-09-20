@@ -5,6 +5,7 @@ const userController = require('../Controller/userController')
 const bookingController = require('../Controller/bookingController')
 const offerController= require('../Controller/offerController')
 const chatController = require('../Controller/chatController')
+const categoryController = require('../Controller/categoryController')
 const userAuth = require('../Middlewares/userAuth')
 const path = require('path')
 
@@ -57,5 +58,10 @@ routes.post('/addReview',userAuth.userAuth,bookingController.addReview)
 
 routes.post('/addChat',userAuth.userAuth,chatController.addChat)
 routes.get('/getChats',userAuth.userAuth,chatController.getChats)
+
+//------------------------------------ categories ------------------------------
+
+routes.get('/getCategories',categoryController.getCategories)
+
 
 module.exports = routes

@@ -223,8 +223,49 @@ const getProfileData = async (req, res) => {
 const getStudios = async (req, res) => {
   try {
     console.log("entered getStudio page")
+    console.log("req.search",req.query)
     // const studioDetails = await Studio.find({varified:true}).populate('images')
-    const studioDetails = await Studio.find({ varified: true })
+    let query={ varified: true }
+    // if (req.query.search) {
+    //   query = {
+    //     varified:true,
+    //     $or: [
+    //       { companyName: { $regex: req.query.search, $options: "i" } },
+    //       { district: { $regex: req.query.search, $options: "i" } },
+    //       { city: { $regex: req.query.search, $options: "i" } },
+    //       // { companyName: { $regex: searchData, $options: "i" } }
+    //     ]
+    //   }
+    // }
+
+    const conditions = [];
+
+    if (req.query.search) {
+      const searchCondition = {
+        $or: [
+          { companyName: { $regex: req.query.search, $options: "i" } },
+          { city: { $regex: req.query.search, $options: "i" } },
+          // Add other search fields here
+        ]
+      };
+      conditions.push(searchCondition);
+    }
+
+    if (req.query.location) {
+      const locationCondition = {
+        district: { $regex: req.query.location, $options: "i" }
+      };
+      conditions.push(locationCondition);
+    }
+
+    if (conditions.length > 0) {
+      query = {
+        varified: true,
+        $and: conditions
+      };
+    }
+    
+    const studioDetails = await Studio.find(query)
       .populate({
         path: 'images',
         populate: {

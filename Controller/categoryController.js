@@ -27,7 +27,7 @@ const addCategory = async(req,res)=>{
 const getCategories = async(req,res)=>{
     try {
         const categoryDatas = await Category.find()
-        res.status(200).json({message:"Category successfully added",categoryDatas})
+        res.status(200).json({message:"Category successfully got",categoryDatas})
     } catch (error) {
         console.log("addCategoy : ",error.message)
     }
