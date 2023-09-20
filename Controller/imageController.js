@@ -7,9 +7,9 @@ const category = require('../Models/categoryModel')
 
 const getStudios =  async(req,res)=>{
     try {
-        console.log("entered getStudio________________________________________________")
         console.log("req.id :",req.id)
         const studioDatas = await Studio.find({vendorId:req.id})
+        console.log("studioDatas : ",studioDatas)
         res.status(200).json({studioDatas})
     } catch (error) {
         console.log("getCategories addStudio",error.message)
