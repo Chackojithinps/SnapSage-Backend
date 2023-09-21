@@ -224,28 +224,14 @@ const getStudios = async (req, res) => {
   try {
     console.log("entered getStudio page")
     console.log("req.search",req.query)
-    // const studioDetails = await Studio.find({varified:true}).populate('images')
     let query={ varified: true }
-    // if (req.query.search) {
-    //   query = {
-    //     varified:true,
-    //     $or: [
-    //       { companyName: { $regex: req.query.search, $options: "i" } },
-    //       { district: { $regex: req.query.search, $options: "i" } },
-    //       { city: { $regex: req.query.search, $options: "i" } },
-    //       // { companyName: { $regex: searchData, $options: "i" } }
-    //     ]
-    //   }
-    // }
-
     const conditions = [];
 
-    if (req.query.search) {
-      const searchCondition = {
+    if (req.query.search){
+      const searchCondition={
         $or: [
           { companyName: { $regex: req.query.search, $options: "i" } },
           { city: { $regex: req.query.search, $options: "i" } },
-          // Add other search fields here
         ]
       };
       conditions.push(searchCondition);
@@ -265,7 +251,7 @@ const getStudios = async (req, res) => {
       };
     }
     
-    const studioDetails = await Studio.find(query)
+    const filteredStudios = await Studio.find(query)
       .populate({
         path: 'images',
         populate: {
@@ -273,7 +259,17 @@ const getStudios = async (req, res) => {
           model: 'category', // Replace 'category' with the correct model name
         },
       }).populate('category.categories').populate('review.user')
-    console.log("studioDetails : ", studioDetails)
+      let studioDetails;
+      if(req.query.category){
+         studioDetails = filteredStudios.filter((studio) => {
+          return studio.category.some(
+            (cat) => cat.categories && cat.categories.categoryName === req.query.category
+          );
+        });
+      }else{
+        studioDetails=filteredStudios
+      }
+    console.log("studioDetails : ", filteredStudios)
     res.status(200).json({ success: true, studioDetails })
   } catch (error) {
     console.log("error in getStudios in userside : ", error.message)
