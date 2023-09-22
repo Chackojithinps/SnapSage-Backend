@@ -23,7 +23,7 @@ const offerSchmea = new mongoose.Schema({
     },
     isListed:{
         type:Boolean,
-        default:false
+        default:true
     },
     oneTime:{
         type:Boolean,

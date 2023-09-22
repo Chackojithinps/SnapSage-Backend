@@ -48,6 +48,7 @@ routes.get('/unpaidBookings',vendorAuth.partnerAuth,bookingController.unpaidBook
 routes.patch('/finishWork',vendorAuth.partnerAuth,bookingController.finishWork)
 routes.get('/workHistory',vendorAuth.partnerAuth,bookingController.workHistory)
 routes.post('/rejectUnpaiduser',vendorAuth.partnerAuth,bookingController.rejectUnpaiduser)
+routes.get('/allBookings',vendorAuth.partnerAuth,bookingController.allBookings)
 
 // ----------------------------------- Offers ---------------------------
 routes.post('/addOffer',vendorAuth.partnerAuth,offerController.addOffer)

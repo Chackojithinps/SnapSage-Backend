@@ -260,6 +260,7 @@ const getStudios = async (req, res) => {
         },
       }).populate('category.categories').populate('review.user')
       let studioDetails;
+
       if(req.query.category){
          studioDetails = filteredStudios.filter((studio) => {
           return studio.category.some(

@@ -6,7 +6,7 @@ const Chat = require('../Models/chatModel')
 const addChat = async (req, res) => {
     try {
         console.log("enetered ad chat")
-        console.log("message : ", req.body)
+        console.log("message1 : ", req.body)
         const time = new Date(Date.now()).getHours() + 
             ":" +
             new Date(Date.now()).getMinutes()
@@ -17,7 +17,7 @@ const addChat = async (req, res) => {
             time: time
         })
         await chatData.save()
-        res.status(200).json({ messsage: "successfully added chat", chatData })
+        res.status(200).json({ message: "successfully added chat", chatData })
     } catch (error) {
         console.log('error', error.messsage)
     }
@@ -29,7 +29,7 @@ const addChat = async (req, res) => {
 const getChats = async (req, res) => {
     try {
         console.log("enetered get chat")
-        const messageData = await Chat.find({ user: req.id }).sort({ createAt: 1 })
+        const messageData = await Chat.find({ user: req.id }).sort({ createAt: 1 }).populate('user')
         console.log("messageData : ", messageData)
         res.status(200).json({ message: "successfully added chat", messageData })
     } catch (error) {

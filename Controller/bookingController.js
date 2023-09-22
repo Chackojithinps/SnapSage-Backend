@@ -37,43 +37,43 @@ const bookingHistory = async (req, res) => {
 }
 // ------------------------------------------ isUserBookde ---------------------------------------------
 
-const isUserBooked = async(req,res)=>{
+const isUserBooked = async (req, res) => {
   try {
     console.log("entered is user exists")
-    console.log("studioId : ",req.query.id)
-    const isUser = await Booking.find({user:req.id,workStatus:true})
-    console.log("isUser : ",isUser)
+    console.log("studioId : ", req.query.id)
+    const isUser = await Booking.find({ user: req.id, workStatus: true })
+    console.log("isUser : ", isUser)
     // const isUserBooked = isUser.filter((booking)=>{
     //   console.log("isUserStudio Id  : ",booking.studio)
 
     //   return booking.studio.equals(queryId);
     // })
-    res.status(200).json({success:true,isUser})
-    
+    res.status(200).json({ success: true, isUser })
+
   } catch (error) {
-    console.log("roror : ",error.message)
+    console.log("roror : ", error.message)
   }
 }
 
 // ------------------------------------------ addReview ---------------------------------------------
 
-const addReview = async(req,res)=>{
+const addReview = async (req, res) => {
   try {
     console.log("entered review")
-    console.log("req.body : ",req.body)
+    console.log("req.body : ", req.body)
     const newReview = {
       rating: req.body.rating,
       feedback: req.body.feedback,
       user: req.id,
     };
-    console.log("newReview : ",newReview)
+    console.log("newReview : ", newReview)
     const result = await Studio.updateOne(
       { _id: req.body.studioId },
-      { $push: { review: newReview }}
+      { $push: { review: newReview } }
     );
-    res.status(200).json({success:true})
+    res.status(200).json({ success: true })
   } catch (error) {
-    console.log("roror : ",error.message)
+    console.log("roror : ", error.message)
   }
 }
 
@@ -83,11 +83,11 @@ const bookingRequest = async (req, res) => {
   try {
     console.log(req.id)
     const { message, email, phone, district, city, eventDate, totalAmount, categories, studioId } = req.body;
-   
+
     const offers = req.body.offers
     const offerIds = offers.map((offer) => offer._id);
-    
-    console.log("offerId : ",offerIds)
+
+    console.log("offerId : ", offerIds)
 
     const bookingData = new Booking({
       user: req.id,
@@ -104,8 +104,8 @@ const bookingRequest = async (req, res) => {
       })),
     });
     await bookingData.save();
-    console.log("bookingDAtas : : : ",bookingData)
-    const offerData = await Offer.updateMany({ _id: { $in: offerIds } },{ $push: { user: req.id } })
+    console.log("bookingDAtas : : : ", bookingData)
+    const offerData = await Offer.updateMany({ _id: { $in: offerIds } }, { $push: { user: req.id } })
     res.status(201).json({ success: true, bookingData });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
@@ -226,6 +226,67 @@ const Bookings = async (req, res) => {
   }
 }
 
+
+// ------------------------------------------ Get All bookings in vendor Side for dashboard  ---------------------------------------------
+
+const allBookings = async (req, res) => {
+  try {
+    console.log("get all bookings")
+    console.log("req.id ", req.id)
+    const BookingData = await Booking.find().populate('studio')
+    const vendorStudio = BookingData.filter((bookings) => {
+      return bookings.studio.vendorId == req.id
+    })
+
+    let bookingRequest = 0;
+    let unpaidBookings = 0;
+    let upcomingEvents = 0;
+    let workHistory = 0;
+    let Sunday = 0;
+    let Monday = 0;
+    let Tuesday = 0;
+    let Wednesday = 0;
+    let Thursday = 0;
+    let Friday = 0;
+    let Saturday = 0;
+    let totalPrice = 0
+    vendorStudio.forEach((bookings) => {
+      if (bookings.bookingStatus == false) {
+        bookingRequest++;
+        const dayOfWeekIndex = bookings.createdAt.getDay();
+        if (dayOfWeekIndex == 0) {
+          Sunday++;
+        } else if (dayOfWeekIndex == 1) {
+          Monday++
+        } else if (dayOfWeekIndex == 2) {
+          Tuesday++
+        }else if (dayOfWeekIndex == 3) {
+           Wednesday++
+        }else if(dayOfWeekIndex==4){
+          Thursday++
+        }else if(dayOfWeekIndex==5){
+          Friday++
+        }else{
+          Saturday++;
+        }
+        console.log("thursday : ",Thursday)
+  }else if (bookings.bookingStatus && bookings.workStatus) {
+    totalPrice+=bookings.totalAmount
+    workHistory++
+  } else if (bookings.bookingStatus && bookings.advanceAmount) {
+    upcomingEvents++
+  } else {
+    unpaidBookings++
+  }
+})
+
+  const Days = {Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday}
+  console.log("days : ",Days)
+  res.status(200).json({ success: true, bookingRequest, unpaidBookings, upcomingEvents, workHistory,Days,totalPrice })
+  } catch (error) {
+  res.status(500).json({ error: 'Internal server error' });
+}
+}
 // ---------------------------------------------------sent Mail--------------------------------------------------------------
 
 const sendOTP = async (email, message, subject) => {
@@ -438,5 +499,6 @@ module.exports = {
   bookingHistory,
   rejectUnpaiduser,
   isUserBooked,
-  addReview
+  addReview,
+  allBookings
 }
