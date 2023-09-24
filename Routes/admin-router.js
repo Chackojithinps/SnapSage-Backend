@@ -32,6 +32,6 @@ routes.patch('/verifyStudio',adminAuth.adminAuth,adminController.varifyStudio)
 routes.get('/chatLists',adminAuth.adminAuth,chatController.chatLists)
 routes.get('/userChats',adminAuth.adminAuth,chatController.userChats)
 routes.post('/addChat',adminAuth.adminAuth,chatController.addChatAdmin)
-
+routes.get('/getDatas',adminAuth.adminAuth,adminController.getDatas)
 
 module.exports= routes

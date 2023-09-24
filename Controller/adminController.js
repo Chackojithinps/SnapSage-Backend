@@ -1,5 +1,6 @@
 const Admin = require('../Models/adminModel')
 const User = require('../Models/userModel')
+const Booking = require('../Models/bookingSchema')
 const Studio = require('../Models/StudioModel')
 const jwt = require('jsonwebtoken')
 const Vendor = require('../Models/vendorModel')
@@ -233,6 +234,71 @@ const varifyStudio = async (req, res) => {
   }
 }
 
+// ----------------------------------------------------- get datas for admin dash ---------------------------------------------
+const getDatas = async (req, res) => {
+  try {
+    console.log("entered get Datas page")
+    let VarifiedPartner= 0;
+    let PartnerRequests = 0;
+    let VarifiedStudios = 0;
+    let studioRequests =0;
+    const PartnerDatas = await Vendor.find()
+    PartnerDatas.forEach((data)=>{
+      if(data.varified){
+           VarifiedPartner++;
+      }else{
+           PartnerRequests++;
+      }
+    })
+    const studioDatas = await Studio.find()
+    studioDatas.forEach((data)=>{
+         if(data.varified){
+            VarifiedStudios++;
+         }else{
+           studioRequests++;
+         }
+    })
+
+    const Datas = {VarifiedPartner,PartnerRequests,VarifiedStudios,studioRequests}
+    console.log("Datas : ",Datas)
+
+    const BookingData = await Booking.find()
+    let Sunday = 0;
+    let Monday = 0;
+    let Tuesday = 0;
+    let Wednesday = 0;
+    let Thursday = 0;
+    let Friday = 0;
+    let Saturday = 0;
+
+    BookingData.forEach((bookings) => {
+        const dayOfWeekIndex = bookings.createdAt.getDay();
+        if (dayOfWeekIndex == 0) {
+          Sunday++;
+        } else if (dayOfWeekIndex == 1){
+          Monday++
+        } else if (dayOfWeekIndex == 2){
+          Tuesday++
+        }else if (dayOfWeekIndex == 3) {
+           Wednesday++
+        }else if(dayOfWeekIndex==4){
+          Thursday++
+        }else if(dayOfWeekIndex==5){
+          Friday++
+        }else{
+          Saturday++;
+        }
+        console.log(dayOfWeekIndex,"----")
+    })
+  const Days = {Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday}
+
+    res.status(200).json({ success: true ,Datas,Days })
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error', });
+  }
+}
+
+
 module.exports = {
   postLogin,
   getUserLists,
@@ -243,5 +309,6 @@ module.exports = {
   verifyVendor,
   rejectVendor,
   getUnvarifiedStudios,
-  varifyStudio
+  varifyStudio,
+  getDatas
 }

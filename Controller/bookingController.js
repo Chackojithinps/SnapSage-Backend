@@ -256,9 +256,9 @@ const allBookings = async (req, res) => {
         const dayOfWeekIndex = bookings.createdAt.getDay();
         if (dayOfWeekIndex == 0) {
           Sunday++;
-        } else if (dayOfWeekIndex == 1) {
+        } else if (dayOfWeekIndex == 1){
           Monday++
-        } else if (dayOfWeekIndex == 2) {
+        } else if (dayOfWeekIndex == 2){
           Tuesday++
         }else if (dayOfWeekIndex == 3) {
            Wednesday++
@@ -270,10 +270,10 @@ const allBookings = async (req, res) => {
           Saturday++;
         }
         console.log("thursday : ",Thursday)
-  }else if (bookings.bookingStatus && bookings.workStatus) {
+  }else if (bookings.bookingStatus && bookings.workStatus){
     totalPrice+=bookings.totalAmount
     workHistory++
-  } else if (bookings.bookingStatus && bookings.advanceAmount) {
+  } else if (bookings.bookingStatus && bookings.advanceAmount){
     upcomingEvents++
   } else {
     unpaidBookings++
@@ -285,8 +285,11 @@ const allBookings = async (req, res) => {
   res.status(200).json({ success: true, bookingRequest, unpaidBookings, upcomingEvents, workHistory,Days,totalPrice })
   } catch (error) {
   res.status(500).json({ error: 'Internal server error' });
+ }
 }
-}
+
+
+
 // ---------------------------------------------------sent Mail--------------------------------------------------------------
 
 const sendOTP = async (email, message, subject) => {
