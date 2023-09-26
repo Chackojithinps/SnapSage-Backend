@@ -28,6 +28,7 @@ const postLogin = async (req, res) => {
     console.log("token  ,",AdminToken)
     res.status(200).json({ message: 'Login successful', AdminToken });
   } catch (error) {
+    console.log(error.message)
     res.status(500).json({ error: 'Internal server error' });
   }
 };
