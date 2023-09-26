@@ -262,7 +262,9 @@ const getDatas = async (req, res) => {
     const Datas = {VarifiedPartner,PartnerRequests,VarifiedStudios,studioRequests}
     console.log("Datas : ",Datas)
 
-    const BookingData = await Booking.find()
+    // const BookingData = await Booking.find().populate('studio')
+    const BookingData = await Booking.find().populate('studio').populate('user').populate('categories.categoryId').sort({createdAt:-1})
+
     let Sunday = 0;
     let Monday = 0;
     let Tuesday = 0;
@@ -270,7 +272,7 @@ const getDatas = async (req, res) => {
     let Thursday = 0;
     let Friday = 0;
     let Saturday = 0;
-
+    let BookingCount = BookingData.length;
     BookingData.forEach((bookings) => {
         const dayOfWeekIndex = bookings.createdAt.getDay();
         if (dayOfWeekIndex == 0) {
@@ -290,9 +292,10 @@ const getDatas = async (req, res) => {
         }
         console.log(dayOfWeekIndex,"----")
     })
-  const Days = {Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday}
-
-    res.status(200).json({ success: true ,Datas,Days })
+    const user= await User.find()
+    let userCount = user.length;
+    const Days = {Sunday,Monday,Tuesday,Wednesday,Thursday,BookingCount,Friday,Saturday,userCount}
+    res.status(200).json({ success: true ,Datas,Days,BookingData })
   } catch (error) {
     res.status(500).json({ error: 'Internal server error', });
   }
