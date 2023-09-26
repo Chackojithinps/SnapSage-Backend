@@ -18,6 +18,7 @@ const postLogin = async (req, res) => {
     if (!adminDetails) {
       return res.status(401).json({ message: "User doesn't exist" });
     }
+    console.log("finsihed")
     const isPasswordMatch = await bcrypt.compare(password, adminDetails.password);
     console.log("isPasswordMatch ",isPasswordMatch)
     if (!isPasswordMatch) {
