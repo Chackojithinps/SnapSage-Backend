@@ -10,7 +10,9 @@ const bcrypt = require('bcryptjs')
 
 const postLogin = async (req, res) => {
   try {
+    console.log("hello")
     const { email, password } = req.body;
+    console.log("entered req.body ",req.body)
     const adminDetails = await Admin.findOne({ email });
     if (!adminDetails) {
       return res.status(401).json({ message: "User doesn't exist" });
