@@ -5,7 +5,6 @@ const Category = require('../Models/categoryModel')
 
 const addCategory = async(req,res)=>{
     try {
-        console.log("reached category")
         const {category} = req.body
         console.log(category)
         const categoryDetails = await Category.findOne({categoryName:category})
