@@ -233,11 +233,12 @@ const allBookings = async (req, res) => {
   try {
     console.log("get all bookings")
     console.log("req.id ", req.id)
-    const BookingData = await Booking.find().populate('studio')
+    // const BookingData = await Booking.find().populate('studio')
+    const BookingData = await Booking.find().populate('studio').populate('user').populate('categories.categoryId').sort({createdAt:-1})                                                                                                                                                                                                 
+
     const vendorStudio = BookingData.filter((bookings) => {
       return bookings.studio.vendorId == req.id
     })
-
     let bookingRequest = 0;
     let unpaidBookings = 0;
     let upcomingEvents = 0;
@@ -279,16 +280,13 @@ const allBookings = async (req, res) => {
     unpaidBookings++
   }
 })
-
   const Days = {Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday}
   console.log("days : ",Days)
-  res.status(200).json({ success: true, bookingRequest, unpaidBookings, upcomingEvents, workHistory,Days,totalPrice })
+  res.status(200).json({ success: true, bookingRequest, unpaidBookings,vendorStudio, upcomingEvents, workHistory,Days,totalPrice })
   } catch (error) {
   res.status(500).json({ error: 'Internal server error' });
  }
 }
-
-
 
 // ---------------------------------------------------sent Mail--------------------------------------------------------------
 

@@ -222,11 +222,13 @@ const getProfileData = async (req, res) => {
 
 const getStudios = async (req, res) => {
   try {
+    const page=1;
     console.log("entered getStudio page")
     console.log("req.search",req.query)
     let query={ varified: true }
+    let limit =4;
+    let skip=(page-1)*limit;
     const conditions = [];
-
     if (req.query.search){
       const searchCondition={
         $or: [
@@ -236,7 +238,6 @@ const getStudios = async (req, res) => {
       };
       conditions.push(searchCondition);
     }
-
     if (req.query.location) {
       const locationCondition = {
         district: { $regex: req.query.location, $options: "i" }
