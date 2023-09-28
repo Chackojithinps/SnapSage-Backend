@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname, 'Public')))
 app.use(express.urlencoded({ extended: false }));
 
 app.use(cors({
-  origin: ["https://snapsage.vercel.app/"],
+  origin: ["https://snapsage-git-master-jithins-projects.vercel.app/"],
   methods: ['GET', 'POST', 'PATCH'],
   credentials: true
 }))
@@ -29,7 +29,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://snapsage.vercel.app/",
+    origin: "https://snapsage-git-master-jithins-projects.vercel.app/",
     methods: ["GET", "POST","PATCH"]
   }
 });
