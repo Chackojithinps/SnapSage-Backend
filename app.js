@@ -30,7 +30,8 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: "https://snapsage-git-master-jithins-projects.vercel.app/",
-    methods: ["GET", "POST","PATCH"]
+    methods: ["GET", "POST","PATCH"],
+    credentials: true
   }
 });
 
