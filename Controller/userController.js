@@ -30,15 +30,15 @@ const postLogin = async (req, res) => {
     const userDetails = await User.findOne({ email });
     console.log(userDetails)
     if (!userDetails) {
-      return res.status(404).json({ message: "User doesn't exist" });
+      return res.status(200).json({ message: "User doesn't exist" });
     }
     if (userDetails.status == true) {
-      return res.status(404).json({ message: "User doesn't exist" });
+      return res.status(200).json({ message: "User doesn't exist" });
     }
     const isPasswordMatch = await bcrypt.compare(password, userDetails.password);
 
     if (!isPasswordMatch) {
-      return res.status(401).json({ message: 'Incorrect password' });
+      return res.status(200).json({ message: 'Incorrect password' });
     }
 
     const token = jwt.sign({ id: userDetails._id, role:"user" }, process.env.JWT_USER_SECRET_KEY, { expiresIn: '1d' });
@@ -47,7 +47,7 @@ const postLogin = async (req, res) => {
       userName: `${userDetails.fname} ${userDetails.lname}`,
       token
     }
-    res.status(200).json({ message: 'Login successful', userDetail });
+    res.status(200).json({ successMessage: 'Login successful', userDetail });
   } catch (error) {
     console.log('userLogin', error.message);
     res.status(500).json({ message: 'Something went wrong' });

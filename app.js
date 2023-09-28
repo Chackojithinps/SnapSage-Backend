@@ -16,7 +16,7 @@ app.use(express.json())
 app.use(express.static(path.join(__dirname, 'Public')))
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({
-  origin: ["http://localhost:3000"],
+  origin: ["https://snapsage.vercel.app/"],
   methods: ['GET', 'POST', 'PATCH'],
   credentials: true
 }))
@@ -27,7 +27,7 @@ app.use('/admin', adminRouter)
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "https://snapsage.vercel.app/",
     methods: ["GET", "POST","PATCH"]
   }
 });
