@@ -15,6 +15,7 @@ const app = express()
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'Public')))
 app.use(express.urlencoded({ extended: false }));
+
 app.use(cors({
   origin: ["https://snapsage.vercel.app/"],
   methods: ['GET', 'POST', 'PATCH'],
@@ -25,6 +26,7 @@ app.use('/vendor', vendorRouter)
 app.use('/admin', adminRouter)
 
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
     origin: "https://snapsage.vercel.app/",

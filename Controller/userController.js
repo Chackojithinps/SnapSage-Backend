@@ -50,7 +50,7 @@ const postLogin = async (req, res) => {
     res.status(200).json({ successMessage: 'Login successful', userDetail });
   } catch (error) {
     console.log('userLogin', error.message);
-    res.status(500).json({ message: 'Something went wrong' });
+    res.status(500).json({ message: 'Something went wrong',err:error.message });
   }
 };
 
