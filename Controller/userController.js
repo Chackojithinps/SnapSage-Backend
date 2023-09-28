@@ -222,11 +222,12 @@ const getProfileData = async (req, res) => {
 
 const getStudios = async (req, res) => {
   try {
-    const page=1;
+    let page= req.query.pages || 1;
+    console.log("page: : ",page)
     console.log("entered getStudio page")
     console.log("req.search",req.query)
     let query={ varified: true }
-    let limit =4;
+    let limit = 8;
     let skip=(page-1)*limit;
     const conditions = [];
     if (req.query.search){
@@ -259,7 +260,7 @@ const getStudios = async (req, res) => {
           path: 'images.categoryId', // Populate categoryId within the images array
           model: 'category', // Replace 'category' with the correct model name
         },
-      }).populate('category.categories').populate('review.user')
+      }).populate('category.categories').populate('review.user').skip(skip).limit(limit)
       let studioDetails;
 
       if(req.query.category){
@@ -271,8 +272,17 @@ const getStudios = async (req, res) => {
       }else{
         studioDetails=filteredStudios
       }
-    console.log("studioDetails : ", filteredStudios)
-    res.status(200).json({ success: true, studioDetails })
+
+      let totalCount;
+      if(req.query.category){
+        totalCount = studioDetails.length;
+      }else{
+        totalCount = await Studio.countDocuments(query);
+      }
+      console.log("total Count : ",totalCount)
+      totalPages= Math.ceil(totalCount / limit)
+    // console.log("studioDetails : ", filteredStudios)
+    res.status(200).json({ success: true, studioDetails,totalPages,page })
   } catch (error) {
     console.log("error in getStudios in userside : ", error.message)
   }
