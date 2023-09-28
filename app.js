@@ -22,8 +22,14 @@ app.use(express.urlencoded({ extended: false }));
 //   credentials: true
 // }))
 
+// app.use(cors({
+//   origin: "https://snapsage-git-master-jithins-projects.vercel.app", // Remove the trailing slash
+//   methods: ['GET', 'POST', 'PATCH'],
+//   credentials: true
+// }))
+
 app.use(cors({
-  origin: "https://snapsage-git-master-jithins-projects.vercel.app", // Remove the trailing slash
+  origin: "https://snapsage.vercel.app", // Remove the trailing slash
   methods: ['GET', 'POST', 'PATCH'],
   credentials: true
 }))
