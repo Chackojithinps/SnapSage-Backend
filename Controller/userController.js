@@ -222,7 +222,8 @@ const getProfileData = async (req, res) => {
 
 const getStudios = async (req, res) => {
   try {
-    let page= req.query.pages || 1;
+    
+    let page= parseInt(req.query.pages) || 1;
     console.log("page: : ",page)
     console.log("entered getStudio page")
     console.log("req.search",req.query)
