@@ -16,7 +16,7 @@ app.use(express.json())
 app.use(express.static(path.join(__dirname, 'Public')))
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({
-  origin: ["https://snapsage.vercel.app/"],
+  origin: ["https://snapsage.vercel.app"],
   methods: ['GET', 'POST', 'PATCH'],
   credentials: true
 }))
