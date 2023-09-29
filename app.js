@@ -30,6 +30,7 @@ app.use('/admin', adminRouter)
 
 const server = http.createServer(app);
 
+
 const io = new Server(server, {
   cors: {
     origin: "https://snapsage.vercel.app", // Remove the trailing slash
@@ -50,17 +51,17 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
   socket.on('send_message', async (data) => {
     try {
-      // // Save the message to the database
-      // const time = new Date().getHours() + ':' + new Date().getMinutes();
-      // const chatData = new Chat({
-      //   user: data.user, // Replace with the actual user ID
-      //   sender: data.sender,
-      //   message: data.message,
-      //   time: time,
-      // });
-      // await chatData.save();
+      // Save the message to the database
+      const time = new Date().getHours() + ':' + new Date().getMinutes();
+      const chatData = new Chat({
+        user: data.user, // Replace with the actual user ID
+        sender: data.sender,
+        message: data.message,
+        time: time,
+      });
+      await chatData.save();
       // Emit the message to all connected users
-      io.emit('receive_message', data);
+      io.emit('receive_message', chatData);
     } catch (err) {
       console.log("err", err.message)
     }
