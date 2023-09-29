@@ -23,6 +23,12 @@ app.use(cors({
   credentials: true
 }))
 
+// app.use(cors( {
+//   origin: "http://localhost:3000", // Remove the trailing slash
+//   methods: ["GET", "POST", "PATCH"],
+//   credentials: true
+// }))
+
 
 app.use('/', userRouter)
 app.use('/vendor', vendorRouter)
@@ -60,6 +66,8 @@ io.on('connection', (socket) => {
         time: time,
       });
       await chatData.save();
+      // const chats = await Chat.find({user:data.user})
+
       // Emit the message to all connected users
       io.emit('receive_message', chatData);
     } catch (err) {
