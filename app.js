@@ -15,17 +15,14 @@ app.use(express.json())
 app.use(express.static(path.join(__dirname, 'Public')))
 app.use(express.urlencoded({ extended: false }));
 
-// app.use(cors({
-//   origin: "http://localhost:3000", // Remove the trailing slash
-//   methods: ['GET', 'POST', 'PATCH'],
-//   credentials: true
-// }))
+// /
 
 app.use(cors({
   origin: "https://snapsage.vercel.app", // Remove the trailing slash
   methods: ['GET', 'POST', 'PATCH'],
   credentials: true
 }))
+
 
 app.use('/', userRouter)
 app.use('/vendor', vendorRouter)
