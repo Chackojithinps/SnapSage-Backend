@@ -41,6 +41,14 @@ const io = new Server(server, {
   }
 });
 
+// const io = new Server(server, {
+//   cors: {
+//     origin: "http://localhost:3000", // Remove the trailing slash
+//     methods: ["GET", "POST", "PATCH"],
+//     credentials: true
+//   }
+// });
+
 
 io.on('connection', (socket) => {
   socket.on('send_message', async (data) => {

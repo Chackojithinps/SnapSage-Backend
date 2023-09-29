@@ -16,17 +16,17 @@ const postLogin = async (req, res) => {
     const adminDetails = await Admin.findOne({ email });
     console.log("adminDetaisl : ",adminDetails)
     if (!adminDetails) {
-      return res.status(401).json({ message: "User doesn't exist" });
+      return res.status(200).json({ message: "User doesn't exist" });
     }
     console.log("finsihed")
     const isPasswordMatch = await bcrypt.compare(password, adminDetails.password);
     console.log("isPasswordMatch ",isPasswordMatch)
     if (!isPasswordMatch) {
-      return res.status(402).json({ message: 'Incorrect password' });
+      return res.status(200).json({ message: 'Incorrect password' });
     }
     const AdminToken = jwt.sign({ id: adminDetails._id ,role:"admin"}, process.env.JWT_ADMIN_SECRET_KEY, { expiresIn: '1d' });
     console.log("token  ,",AdminToken)
-    res.status(200).json({ message: 'Login successful', AdminToken });
+    res.status(200).json({ successMessage: 'Login successful', AdminToken });
   } catch (error) {
     console.log(error.message)
     res.status(500).json({ error: 'Internal server error' });

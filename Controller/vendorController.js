@@ -82,16 +82,16 @@ const postLogin = async (req, res) => {
     const VendorDetails = await Vendor.findOne({ email });
     console.log("vendordetails : ",VendorDetails)
     if (!VendorDetails){
-        return res.status(404).json({ message: "User doesn't exist" });
+        return res.status(200).json({ message: "User doesn't exist" });
     }
     if(!VendorDetails.varified){
-      return res.status(404).json({ message: "User doesn't exist" });
+      return res.status(200).json({ message: "User doesn't exist" });
 
     }
     const isPasswordMatch = await bcrypt.compare(password, VendorDetails.password);
 
     if (!isPasswordMatch) {
-      return res.status(401).json({ message: 'Incorrect password' });
+      return res.status(200).json({ message: 'Incorrect password' });
     }
 
     const token = jwt.sign({ id: VendorDetails._id,role:"vendor"}, process.env.JWT_VENDOR_SECRET_KEY, { expiresIn: '1d' });
@@ -100,14 +100,13 @@ const postLogin = async (req, res) => {
       token
     }
     console.log(token);
-    res.status(200).json({ message: 'Login successful', vendorDetail });
+    res.status(200).json({ successMessage: 'Login successful', vendorDetail });
 
   } catch (error) {
     console.log('userLogin', error.message);
     res.status(500).json({ message: 'Something went wrong' });
   }
 };
-
 
 // ---------------------------------------Get Vender Profile------------------------------------
 
