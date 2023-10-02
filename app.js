@@ -17,17 +17,17 @@ app.use(express.urlencoded({ extended: false }));
 
 // /
 
-app.use(cors({
-  origin: "https://snapsage.vercel.app", // Remove the trailing slash
-  methods: ['GET', 'POST', 'PATCH'],
-  credentials: true
-}))
-
-// app.use(cors( {
-//   origin: "http://localhost:3000", // Remove the trailing slash
-//   methods: ["GET", "POST", "PATCH"],
+// app.use(cors({
+//   origin: "https://snapsage.vercel.app", // Remove the trailing slash
+//   methods: ['GET', 'POST', 'PATCH'],
 //   credentials: true
 // }))
+
+app.use(cors( {
+  origin: "http://localhost:3000", // Remove the trailing slash
+  methods: ["GET", "POST", "PATCH"],
+  credentials: true
+}))
 
 
 app.use('/', userRouter)
@@ -37,21 +37,21 @@ app.use('/admin', adminRouter)
 const server = http.createServer(app);
 
 
-const io = new Server(server, {
-  cors: {
-    origin: "https://snapsage.vercel.app", // Remove the trailing slash
-    methods: ["GET", "POST", "PATCH"],
-    credentials: true
-  }
-});
-
 // const io = new Server(server, {
 //   cors: {
-//     origin: "http://localhost:3000", // Remove the trailing slash
+//     origin: "https://snapsage.vercel.app", // Remove the trailing slash
 //     methods: ["GET", "POST", "PATCH"],
 //     credentials: true
 //   }
 // });
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000", // Remove the trailing slash
+    methods: ["GET", "POST", "PATCH"],
+    credentials: true
+  }
+});
 
 
 io.on('connection', (socket) => {
