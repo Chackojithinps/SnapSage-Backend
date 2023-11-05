@@ -37,6 +37,7 @@ routes.get('/getProfileData',userAuth.userAuth,userController.getProfileData)
 routes.patch('/editUserProfile',userAuth.userAuth,userController.editUserProfile)
 
 // -----------------------------------Studios---------------------------
+
 routes.get('/getStudios',userController.getStudios)
 
 //------------------------------------Bookings---------------------------
@@ -62,6 +63,5 @@ routes.get('/getChats',userAuth.userAuth,chatController.getChats)
 //------------------------------------ categories ------------------------------
 
 routes.get('/getCategories',categoryController.getCategories)
-
 
 module.exports = routes

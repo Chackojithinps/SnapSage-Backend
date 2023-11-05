@@ -83,6 +83,19 @@ const bookingRequest = async (req, res) => {
   try {
     console.log(req.id)
     const { message, email, phone, district, city, eventDate, totalAmount, categories, studioId } = req.body;
+    console.log("eventDate : ",eventDate)
+    const BookingData = await Booking.find({studio:studioId});
+    console.log("studioData : ",BookingData)
+    // console.log("bookingDAte : ",BookingData.eventDate)
+    const isEventBooked = BookingData.filter((booking)=>{
+      const bookingEventDateToMatch = new Date(booking.eventDate).toISOString().split('T')[0];
+      console.log("bookignDate : ",bookingEventDateToMatch)
+       return bookingEventDateToMatch == eventDate
+    })
+    console.log("isEventBooked",isEventBooked)
+    if(isEventBooked.length>0){
+      return res.status(200).json({success: true,message:"This date is not available"})
+    }
 
     const offers = req.body.offers
     const offerIds = offers.map((offer) => offer._id);
@@ -108,6 +121,7 @@ const bookingRequest = async (req, res) => {
     const offerData = await Offer.updateMany({ _id: { $in: offerIds } }, { $push: { user: req.id } })
     res.status(201).json({ success: true, bookingData });
   } catch (error) {
+    console.log("error : ",error.message)
     res.status(500).json({ error: 'Internal server error' });
   }
 }
