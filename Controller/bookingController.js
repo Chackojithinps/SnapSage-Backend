@@ -155,10 +155,12 @@ const bookingList = async (req, res) => {
 const payment = async (req, res) => {
   try {
     console.log("entetered payment")
+
     var instance = new Razorpay({
       key_id: 'rzp_test_Qt18oumm8k0BKa',
       key_secret: 'vZ035cWAKANlYeO7bZxShcNT'
-    });
+    })
+
     const options = {
       amount: req.body.amount * 100,
       currency: "INR",
@@ -172,7 +174,6 @@ const payment = async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
-
   }
 }
 
@@ -183,7 +184,7 @@ const VarifyPayment = async (req, res) => {
     console.log(" varify payment")
     console.log("req.body", req.body)
     const body = req.body.response.razorpay_order_id + "|" + req.body.response.razorpay_payment_id
-    console.log("body : : : ", body)
+    console.log("body : : : ",body)
     var expectedSignature = crypto.createHmac("sha256", "vZ035cWAKANlYeO7bZxShcNT"); //hash key creating
     await expectedSignature.update(body.toString());
     expectedSignature = await expectedSignature.digest("hex");
